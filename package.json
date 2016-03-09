@@ -14,7 +14,7 @@
   "author": "Joseph Tinoco, Jihoo Yoo, Sean Smith, Kimberley Stennett, Winnie Chung",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^0.8.5",
+    "bcrypt-node": "^0.1.0",
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
     "connect-flash": "^0.1.1",

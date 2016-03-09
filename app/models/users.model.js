@@ -3,7 +3,7 @@
   ==================
 
 */
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-node');
 
 // Insert new user in the DB
 exports.createUser = function(user, callback){
