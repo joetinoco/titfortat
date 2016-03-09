@@ -15,8 +15,10 @@ module.exports = function(app){
 
   app.get('/signin', user.renderSignin)
      .post('/signin', passport.authenticate('local', {
-       successRedirect: '/',
-       failureRedirect: '/signin' }));
+        successRedirect: '/',
+        failureRedirect: '/signin',
+        failureFlash: true
+      }));
 
   app.get('/signup', user.renderSignup)
      .post('/signup', user.createUser);
