@@ -6,7 +6,7 @@
 
 */
 
-var db = require('../../config/mysql.js');
+var db = require('../models/db.model')();
 var tasks = require('../models/tasks.model');
 
 // Handler for the createTask form POST requests
@@ -27,13 +27,15 @@ exports.create = function(req, res, next) {
 
 // Render createTask form
 exports.render = function(req, res, next) {
-    var assigner = req.user.userId; // current user
+    var assigner = '<option value="' + req.user.userId + '" selected>' + req.user.userName + '</option>'; // current user
     var assigneeList = '';    
     
     console.log("Id: " + assigner + " Name: " + req.user.userName);
     
     // get list of assignees
-    db.query("select * from users;", function(err, results, fields) {
+    db.query({
+        sql: 'select * from users;'
+    }, function(err, results, fields) {        
         if (err) {
              console.log(err.toString());
         } else {
