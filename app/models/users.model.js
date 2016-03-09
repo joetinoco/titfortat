@@ -14,18 +14,15 @@ exports.createUser = function(user, callback){
   var passHash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
 
   // Write to the DB
-  var db = require('../models/dbconn')();
+  var db = require('../models/db.model')();
   db.query({
     sql: 'INSERT INTO users ' +
     '(userName, userEmail, userPhone, userCountry, userPassword, userCredits) ' +
     'VALUES (?,?,?,?,?,?)',
     values: [user.name, user.email, user.phone, user.country, passHash, user.credits]
-  }, function (error, results, fields) {
-    console.log(results);
-    console.log(fields);
+  }, function (err, results, fields) {
     db.end();
     if (err){
-      throw err;
       callback(false, err);
     }
     callback(true, results);

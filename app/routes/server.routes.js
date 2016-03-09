@@ -10,7 +10,8 @@ module.exports = function(app){
       user = require('../controllers/users.controller');
 
   app.get('/', index.render);
-  app.get('/signup', user.renderSignup);
+  app.get('/signup', user.renderSignup)
+     .post('/signup', user.createUser);
   app.get('/signin', user.renderSignin);
 
 }
