@@ -1,3 +1,12 @@
+/*
+  DB model
+  ==================
+
+  Returns an authenticated, ready-to-use connection
+  to the database server.
+
+*/
+
 module.exports = function(){
   var mysql      = require('mysql');
   var connection = mysql.createConnection({
@@ -10,9 +19,9 @@ module.exports = function(){
   connection.connect(function(err) {
     if (err) {
       console.error('DB: error connecting - ' + err.stack);
-      return;
+      throw err;
     } else {
-      console.log('> Opened connection to DB server.');
+      console.log('> DB connection opened, thread ID: ' + connection.threadId);
     }
   });
 

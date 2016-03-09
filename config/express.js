@@ -28,10 +28,17 @@ module.exports = function(){
     extended: true
   }));
 
+  // Set template engine (EJS)
+  app.set('views', './app/views');
+  app.set('view engine', 'ejs');
+  if(process.env.NODE_ENV === 'development'){
+    app.set('view cache', false);
+  }
+
   // Set passport middleware
   app.use(passport.initialize());
   app.use(passport.session());
-  
+
   // Set routes
   require('../app/routes/server.routes.js')(app);
   return app;

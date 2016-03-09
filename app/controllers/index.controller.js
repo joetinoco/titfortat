@@ -6,8 +6,9 @@
 
 */
 
+// Just a placeholder for the index page
 exports.render = function(req, res){
-  var db = require('../models/dbconn')();
+  var db = require('../models/db.model')();
 
   db.query('SHOW TABLES;', function(err, rows, fields) {
     if (err) throw err;
