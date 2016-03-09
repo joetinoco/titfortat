@@ -1,24 +1,29 @@
+/*
+
+Passport authentication strategy (local)
+========================================
+
+*/
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    User = require('mongoose').model('User');
+    users = require('../../app/models/users.model');
+
 module.exports = function() {
   passport.use(new LocalStrategy(function(username, password, done) {
-    User.findOne({
-      username: username
-    }, function(err, user) {
+    users.getUser(username, function(err, user){
       if (err) {
-        return done(err);
-      }
-      if (!user) {
+        console.log('> User "' + username + '" failed to authenticate: ' + err.code);
         return done(null, false, {
-          message: 'Unknown user'
+          message: err.code
         });
       }
-      if (!user.authenticate(password)) {
+      if (!users.authenticate(user, password)) {
+        console.log('> User "' + username + '" failed to authenticate: wrong password.');
         return done(null, false, {
           message: 'Invalid password'
         });
       }
+      console.log('> User "' + username + '" logged in.');
       return done(null, user);
     });
   }));

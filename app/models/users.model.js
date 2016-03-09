@@ -23,13 +23,44 @@ exports.createUser = function(user, callback){
   }, function (err, results, fields) {
     db.end();
     if (err){
-      callback(false, err);
+      callback(err);
     }
-    callback(true, results);
+    callback(false, results);
+  });
+}
+
+// Search a username, return a user
+exports.getUser = function(username, callback){
+  var db = require('../models/db.model')();
+  db.query({
+    sql: 'SELECT * FROM users WHERE userName = ?',
+    values: [username]
+  }, function (err, results, fields) {
+    db.end();
+    if (err){
+      callback(err);
+    }
+    callback(false, results[0]);
+  });
+}
+
+// Search a user ID, return a user
+exports.getUserById = function(userId, callback){
+  var db = require('../models/db.model')();
+  db.query({
+    sql: 'SELECT * FROM users WHERE userId = ?',
+    values: [userId]
+  }, function (err, results, fields) {
+    db.end();
+    if (err){
+      callback(err);
+    }
+    callback(false, results[0]);
   });
 }
 
 // Check user name + password for authentication
 exports.authenticate = function(username, password){
-
+  // TODO: proper auth
+  return true;
 }

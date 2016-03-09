@@ -33,6 +33,7 @@ module.exports = function(){
   app.set('view engine', 'ejs');
   if(process.env.NODE_ENV === 'development'){
     app.set('view cache', false);
+    app.disable('etag'); // Prevent 304 (not modified) responses
   }
 
   // Set passport middleware
