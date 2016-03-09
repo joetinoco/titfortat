@@ -3,6 +3,7 @@
   ==================
 
 */
+var bcrypt = require('bcrypt');
 
 // Insert new user in the DB
 exports.createUser = function(user, callback){
@@ -10,7 +11,6 @@ exports.createUser = function(user, callback){
   user.credits = 2; // Default for new users
 
   // Hash user password
-  var bcrypt = require('bcrypt');
   var passHash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
 
   // Write to the DB
@@ -24,6 +24,7 @@ exports.createUser = function(user, callback){
     db.end();
     if (err){
       callback(err);
+      return;
     }
     callback(false, results);
   });
@@ -39,6 +40,11 @@ exports.getUser = function(username, callback){
     db.end();
     if (err){
       callback(err);
+      return;
+    }
+    if (results.length === 0){
+      callback({ code: 'User not found' });
+      return;
     }
     callback(false, results[0]);
   });
@@ -54,13 +60,13 @@ exports.getUserById = function(userId, callback){
     db.end();
     if (err){
       callback(err);
+      return;
     }
     callback(false, results[0]);
   });
 }
 
 // Check user name + password for authentication
-exports.authenticate = function(username, password){
-  // TODO: proper auth
-  return true;
+exports.authenticate = function(user, password){
+  return bcrypt.compareSync(password, user.userPassword.toString());
 }
