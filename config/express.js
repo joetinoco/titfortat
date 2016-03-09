@@ -8,7 +8,8 @@ module.exports = function(){
   var express = require('express'),
     morgan = require('morgan'),
     compression = require('compression'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    passport = require('passport');
 
   var app = express();
 
@@ -27,6 +28,10 @@ module.exports = function(){
     extended: true
   }));
 
+  // Set passport middleware
+  app.use(passport.initialize());
+  app.use(passport.session());
+  
   // Set routes
   require('../app/routes/server.routes.js')(app);
   return app;

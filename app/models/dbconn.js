@@ -3,7 +3,8 @@ module.exports = function(){
   var connection = mysql.createConnection({
     host: 'mysql.josetinoco.com',
     user: 'titfortat',
-    password: '123qweasdzxc'
+    password: '123qweasdzxc',
+    database: 'titfortat'
   });
 
   connection.connect(function(err) {
@@ -11,7 +12,9 @@ module.exports = function(){
       console.error('DB: error connecting - ' + err.stack);
       return;
     } else {
-      console.log('> Connected to DB server successfully.');
+      console.log('> Opened connection to DB server.');
     }
   });
+
+  return connection;
 };
