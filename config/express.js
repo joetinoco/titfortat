@@ -9,7 +9,9 @@ module.exports = function(){
     morgan = require('morgan'),
     compression = require('compression'),
     bodyParser = require('body-parser'),
-    passport = require('passport');
+    session = require('express-session'),
+    passport = require('passport'),
+    flash = require('connect-flash');
 
   var app = express();
 
@@ -35,6 +37,14 @@ module.exports = function(){
     app.set('view cache', false);
     app.disable('etag'); // Prevent 304 (not modified) responses
   }
+
+  // Set "flash messages" (connect-flash)
+  app.use(session({
+    secret: 'do not tell anyone',
+    resave: true,
+    saveUninitialized: true
+  }));
+  app.use(flash());
 
   // Set passport middleware
   app.use(passport.initialize());
