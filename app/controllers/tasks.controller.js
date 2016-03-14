@@ -15,21 +15,7 @@ exports.read = function(req, res) {
         } else if (data.length > 0) {
             message = '<table><tr><td>Task Name:</td><td>Task Description:</td><td>Status:</td><td>Assigned By:</td><td>Assigned To:</td></tr>';
             data.forEach(function(entry) {
-                var assigner = entry.taskmasterId;
-                var assignee = entry.assigneeId;
-                var users = require('../models/users.model');
-
-                users.getUserById(entry.taskmasterId, function(err, result) {
-                    if (!err) {
-                        assigner = result.userName;
-                    }
-                });
-                users.getUserById(entry.assigneeId, function(err, result) {
-                    if (!err) {
-                        assignee = result.userName;
-                    }
-                });
-                message = message + '<tr><td>' + entry.taskName + '</td><td>' + entry.taskDescription + '</td><td>' + entry.taskStatus + '</td><td><a href="/tasks/' + assigner + '">' + assigner + '</a></td><td><a href="/tasks/' + assignee + '">' + assignee + '</td></tr>';
+                message = message + '<tr><td>' + entry.taskName + '</td><td>' + entry.taskDescription + '</td><td>' + entry.taskStatus + '</td><td><a href="/tasks/' + entry.taskmasterId + '">' + entry.assigner + '</a></td><td><a href="/tasks/' + entry.assigneeId + '">' + entry.assignee + '</td></tr>';
             });
             message += "</table>";
 
@@ -59,37 +45,42 @@ exports.create = function(req, res, next) {
 };
 
 exports.tasksByUser = function(req, res, next, id) {
-    content = "<h1>Tasks Created by " + id + "</h1>";
     var tasks = require('../models/tasks.model');
-    tasks.getTasksByAssigner(id, function(err, results) {
-        if (err) {
-            next(err);
-        } else if (results.length == 0) {
-            content += '<i>Nothing here yet</i>';
-        } else {
-            content += '<table><tr><td>Name</td><td>Description</td><td>Assigned To</td></tr>';
-            results.forEach(function(result) {
-                content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.assigneeId + '</td></tr>';
-            });
-        }
+    var users = require('../models/users.model');
 
-        content = content + '</table><br><br><h1>Tasks Assigned to ' + id + '</h1>';;
+    users.getUserById(id, function(err, results) {
+        var username = results.userName;
+        var content = "<h1>Tasks Created by " + username + "</h1>";
 
-        tasks.getTasksByAssignee(id, function(err, results) {
+        tasks.getTasksByAssigner(id, function(err, results) {
             if (err) {
                 next(err);
             } else if (results.length == 0) {
                 content += '<i>Nothing here yet</i>';
             } else {
-                content += '<table><tr><td>Name</td><td>Description</td><td>Assigned By</td></tr>';
+                content += '<table><tr><td>Name</td><td>Description</td><td>Assigned To</td><td>Status</td></tr>';
                 results.forEach(function(result) {
-                    content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.taskmasterId + '</td></tr>';
+                    content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.userName + '</td><td>' + result.taskStatus + '</td></tr>';
                 });
-                content += '</table>';
             }
-            res.send(content);
+
+            content = content + '</table><br><br><h1>Tasks Assigned to ' + username + '</h1>';;
+
+            tasks.getTasksByAssignee(id, function(err, results) {
+                if (err) {
+                    next(err);
+                } else if (results.length == 0) {
+                    content += '<i>Nothing here yet</i>';
+                } else {
+                    content += '<table><tr><td>Name</td><td>Description</td><td>Assigned By</td><td>Status</td></tr>';
+                    results.forEach(function(result) {
+                        content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.userName + '</td><td>' + result.taskStatus + '</td></tr>';
+                    });
+                    content += '</table>';
+                }
+                res.send(content);
+            });
         });
-        res.send(content);
     });
 };
 
