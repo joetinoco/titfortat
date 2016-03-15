@@ -20,6 +20,12 @@ module.exports = function(app) {
             failureFlash: true
         }));
 
+    app.get('/signout', function(req, res){
+      req.logout();
+      res.redirect('/');
+    });
+
+
     app.get('/signup', user.renderSignup)
         .post('/signup', user.createUser);
 

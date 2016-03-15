@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+
+Index page
+==================
+
+-->
+<html lang="en">
+  <% include components/htmlhead %>
+  <body>
+    <% include components/navbar %>
+    <div class="container">
+      <div class="row starting-msg">
+        <div class="col-md-3"></div>
+        <div class="col-sm-12 col-md-6">
+          <% if (!user) { %>
+            <h1>Welcome!</h1>
+            <a href="/signin">Sign in</a> or <a href="/signup">Sign up</a> to use the site.
+          <% } else { %>
+            <h1>Welcome back, <%= user.userName %></h1>
+          <% } %>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div><!-- container -->
+    <% include components/scripts %>
+  </body>
+</html>
