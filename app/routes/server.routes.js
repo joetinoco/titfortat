@@ -9,7 +9,7 @@ module.exports = function(app) {
     var index = require('../controllers/index.controller'),
         user = require('../controllers/users.controller'),
         task = require('../controllers/tasks.controller.js'),
-
+        invitation = require('../controllers/invitations.controller.js'),
         group = require('../controllers/groups.controller.js'),
         passport = require('passport');
 
@@ -43,6 +43,10 @@ module.exports = function(app) {
     app.route('/createGroup')
             .post(group.create);    
         
-
+    //Invitations
+    /*app.get('/newInvite', invitation.renderNewInvite);
+    app.route('/newInvite')
+            .post(invitation.create);   //replace with invitation exports.xyz name (xyz part)
+    */
     app.param('user', task.tasksByUser);
 }

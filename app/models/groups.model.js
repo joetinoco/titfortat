@@ -37,7 +37,7 @@ exports.createGroup = function(group, user, callback){
             callback(err);
             return;
         }//if error
-        callback(false, results);
+        callback(false, results); //callback that send data to controller
     });//end query
 }
 
