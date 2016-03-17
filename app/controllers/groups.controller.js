@@ -10,9 +10,9 @@ exports.create = function(req, res, next) {
     res.send('You are not logged in.<br/><a href="/signin">Log in</a> or <a href="/signup">sign up</a>');
   } else {
     
-            var groups = require('../models/groups.model');
+            var groupModel = require('../models/groups.model');
             
-            groups.createGroup(req.body, req.user, function(err,data) {
+            groupModel.createGroup(req.body, req.user, function(err,data) {
                 if(err) {
                     console.log(err.toString());
                     req.flash('Feedback', 'Group creation failed. Error Code: ' + err.code);         
