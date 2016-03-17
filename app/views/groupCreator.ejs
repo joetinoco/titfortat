@@ -1,0 +1,26 @@
+<! DOCTYPE html>
+<html>
+
+    <% include components/htmlhead %>
+    
+    <body>
+        <% include components/navbar %>        
+        <form action="/createGroup" method="post">
+            <table align="center">
+                <tr>
+                    <td> <label>Group Name:</label>             </td>
+                    <td> <input type="text" name="name" required /> </td>
+                </tr>
+                                
+                <tr>
+                    <td> <input type="submit" value="Submit" /> </td>
+                </tr>
+            </table>
+            <% if (typeof errorMsg !== 'undefined') { %>
+              <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+            <% } %>
+        </form>
+        
+               
+    </body>
+</html>

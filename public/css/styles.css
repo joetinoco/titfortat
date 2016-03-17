@@ -1,0 +1,13 @@
+/*
+
+User styles.
+
+*/
+body {
+  padding-top: 50px;
+}
+
+.starting-msg {
+  padding: 40px 15px;
+  text-align: center;
+}

@@ -1,0 +1,52 @@
+<! DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%=title %>
+    </title>
+</head>
+
+<body>
+    <h1><%=title %></h1>
+    
+    <form action="/tasks" method="post">
+        <table>
+            <tr>
+                <td>Task Name:</td>
+                <td>
+                    <input type="text" name="name" required/>
+                </td>
+            </tr>
+            <tr>
+                <td>Description:</td>
+                <td>
+                    <textarea name="description" rows="4"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>Assigner:</td>
+                <td>
+                    <select name="assigner">
+                        <%- assigner %>
+                    </select>                    
+                </td>
+            </tr>
+            <tr>
+                <td>Assignee:</td>
+                <td>
+                    <select name="assignee">
+                        <%- assigneeList %>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" , colspan="2">
+                    <input type="submit" value="Create Task" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+</html>
