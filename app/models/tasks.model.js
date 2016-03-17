@@ -43,6 +43,20 @@ exports.createTask = function(task, callback) {
     });
 }
 
+exports.useCredits = function(user, callback) {
+    db.query({
+        sql: 'update users set userCredits = ? where userId = ?',
+        values: [user.userCredits - 1, user.userId]
+    }, function(err, results, fields) {
+        // db.end();
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(false, results);
+    });
+}
+
 // Search an assigner, return tasks
 exports.getTasksByAssigner = function(assignerId, callback) {
     db.query({
