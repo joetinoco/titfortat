@@ -9,6 +9,7 @@ module.exports = function(app) {
     var index = require('../controllers/index.controller'),
         user = require('../controllers/users.controller'),
         task = require('../controllers/tasks.controller.js'),
+
         group = require('../controllers/groups.controller.js'),
         passport = require('passport');
 
@@ -42,5 +43,6 @@ module.exports = function(app) {
     app.route('/createGroup')
             .post(group.create);    
         
+
     app.param('user', task.tasksByUser);
 }
