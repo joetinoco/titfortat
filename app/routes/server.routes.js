@@ -10,7 +10,7 @@ module.exports = function(app) {
         user = require('../controllers/users.controller'),
         task = require('../controllers/tasks.controller.js'),
         invitation = require('../controllers/invitations.controller.js'),
-        group = require('../controllers/groups.controller.js'),
+        groupController = require('../controllers/groups.controller.js'),
         passport = require('passport');
 
     app.get('/', index.render);
@@ -39,9 +39,9 @@ module.exports = function(app) {
         .get(task.read)
         
     //groups
-    app.get('/createGroup', group.renderGroupCreator);
+    app.get('/createGroup', groupController.renderGroupCreator);
     app.route('/createGroup')
-            .post(group.create);    
+            .post(groupController.create);    
         
     //Invitations
     /*app.get('/newInvite', invitation.renderNewInvite);

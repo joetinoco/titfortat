@@ -26,13 +26,13 @@ exports.listAll = function(callback) {
 }//listAll
 
 exports.createGroup = function(group, user, callback){
-    var db = require('../models/db.model')();
+    var db = require('../models/db.model')(); //db connection
     
     db.query({
         sql: 'INSERT INTO groups ' + ' (groupName, groupAdminId) ' + 'VALUES (?,?)',
         values:[group.name, user.userId]
     }, function (err, results, fields) {
-        db.end();
+        db.end(); //close db connection
         if (err){
             callback(err);
             return;
