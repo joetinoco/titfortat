@@ -29,7 +29,8 @@ exports.create = function(req, res, next) {
 
 exports.renderGroupCreator = function(req, res, next){
     res.render('groupCreator', {
-        title: 'Create a Group',
-        errorMsg: req.flash('Feedback')
+        pageTitle: 'Create a Group',
+        errorMsg: req.flash('Feedback'),
+        user: req.user
     });
 }//render
