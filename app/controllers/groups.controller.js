@@ -18,8 +18,9 @@ exports.create = function(req, res, next) {
                     req.flash('Feedback', 'Group creation failed. Error Code: ' + err.code);         
                 } else{
                     console.log('Group created');
-                    req.flash('Feedback', 'Success. Group Created');
                     
+                    req.flash('Feedback', 'Success. Group Created');
+                    res.redirect('/');
                 }//else
             })//creatgroup
             
@@ -30,7 +31,7 @@ exports.create = function(req, res, next) {
 exports.renderGroupCreator = function(req, res, next){
     res.render('groupCreator', {
         pageTitle: 'Create a Group',
-        errorMsg: req.flash('Feedback'),
+        errorMsg: req.flash('Feedback', ''),
         user: req.user
     });
 }//render
