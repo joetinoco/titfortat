@@ -12,12 +12,14 @@ exports.read = function(req, res) {
     tasks.list(function(err, data) {
         if (err) {
             console.log(err.toString());
+            res.redirect('/');
         } else if (data.length > 0) {
             message = '<table><tr><td>Task Name:</td><td>Task Description:</td><td>Status:</td><td>Assigned By:</td><td>Assigned To:</td></tr>';
             data.forEach(function(entry) {
                 message = message + '<tr><td>' + entry.taskName + '</td><td>' + entry.taskDescription + '</td><td>' + entry.taskStatus + '</td><td><a href="/tasks/' + entry.taskmasterId + '">' + entry.assigner + '</a></td><td><a href="/tasks/' + entry.assigneeId + '">' + entry.assignee + '</td></tr>';
             });
             message += "</table>";
+            res.send(message)
         } else {
             message = 'No tasks yet. Why not <a href="/createTask">create</a> one?';
             res.send(message);
@@ -122,4 +124,3 @@ exports.render = function(req, res, next) {
         });
     });
 }
-
