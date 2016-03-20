@@ -1,1 +1,26 @@
-<--Your HTML here -->
+<! DOCTYPE html>
+<html>
+
+    <% include components/htmlhead %>
+    
+    <body>
+        <% include components/navbar %>        
+        <form action="/newInvite" method="post">
+            <table align="center">
+                <tr>
+                    <td> <label>Email:</label>             </td>
+                    <td> <input type="text" name="invitesEmail" required /> </td>
+                </tr>
+                                
+                <tr>
+                    <td> <input type="submit" value="Submit" /> </td>
+                </tr>
+            </table>
+            <% if (typeof errorMsg !== 'undefined') { %>
+              <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+            <% } %>
+        </form>
+        
+               
+    </body>
+</html>

@@ -44,9 +44,9 @@ module.exports = function(app) {
             .post(groupController.create);    
         
     //Invitations
-    /*app.get('/newInvite', invitation.renderNewInvite);
+    app.get('/newInvite', invitation.renderNewInvite);
     app.route('/newInvite')
-            .post(invitation.create);   //replace with invitation exports.xyz name (xyz part)
-    */
+            .post(invitation.createInvite);   //replace with invitation exports.xyz name (xyz part)
+
     app.param('user', task.tasksByUser);
 }
