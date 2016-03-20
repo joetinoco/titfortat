@@ -35,8 +35,8 @@ module.exports = function(app) {
     app.route('/tasks')
         .get(task.read)
         .post(task.create);
-    app.route('/tasks/:user')
-        .get(task.read)
+    app.route('/task/:user')
+        .get(task.read);
         
     //groups
     app.get('/createGroup', groupController.renderGroupCreator);

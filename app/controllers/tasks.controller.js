@@ -7,54 +7,54 @@
 */
 
 exports.read = function(req, res) {
-    var message = '';
+    var taskList;
     var tasks = require('../models/tasks.model');
     tasks.list(function(err, data) {
         if (err) {
             console.log(err.toString());
             res.redirect('/');
-        } else if (data.length > 0) {
-            message = '<table><tr><td>Task Name:</td><td>Task Description:</td><td>Status:</td><td>Assigned By:</td><td>Assigned To:</td></tr>';
-            data.forEach(function(entry) {
-                message = message + '<tr><td>' + entry.taskName + '</td><td>' + entry.taskDescription + '</td><td>' + entry.taskStatus + '</td><td><a href="/tasks/' + entry.taskmasterId + '">' + entry.assigner + '</a></td><td><a href="/tasks/' + entry.assigneeId + '">' + entry.assignee + '</td></tr>';
+        } else if (data.length > 0) {            
+            taskList = new Array(data.length);
+            for (var i=0; i<taskList.length; i++) {
+                taskList[i] = new Array(7);
+                taskList[i][0] = data[i].taskName;
+                taskList[i][1] = data[i].taskDescription;
+                taskList[i][2] = data[i].taskStatus;
+                taskList[i][3] = data[i].taskmasterId;
+                taskList[i][4] = data[i].assigner;
+                taskList[i][5] = data[i].assigneeId;
+                taskList[i][6] = data[i].assignee;
+            }
+            res.render('viewTasks', {
+                pageTitle: 'View Tasks',
+                taskList: taskList,
+                user: req.user
             });
-            message += "</table>";
-            res.send(message)
         } else {
-            message = 'No tasks yet. Why not <a href="/createTask">create</a> one?';
-            res.send(message);
+            res.render('viewTasks', {
+                pageTitle: 'View Tasks',
+                user: req.user
+            });
         }
     });
 };
 
 exports.create = function(req, res, next) {
     var tasks = require('../models/tasks.model');
-    var message = '';
+    var message;
     if (req.user.userCredits >= 1) {
         tasks.createTask(req.body, function(err, data) {
             if (err) {
-                console.log(err.toString());
-                res.redirect('/createTask');
+                message = 'Creation failed: ' + err.code;
             } else {
-                message = '<h1>Task Created!</h1><br><table><tr><td>Name:</td><td>' + req.body.name +
-                    '</td></tr><tr><td>Description:</td><td>' + req.body.description +
-                    '</td></tr><tr><td>Assigned By:</td><td>' + req.body.assigner +
-                    '</td></tr><tr><td>To:</td><td>' + req.body.assignee +
-                    '</td></tr></table>';
-
-                tasks.useCredits(req.user, function(err, data) {
-                    if (err) {
-                        console.log(err.toString());
-                    } else {
-                        res.send(message);
-                    }
-                });
+                message = 'Task created!';
             }
         });
-    } else {
-        message = '<h1>Need at least one credit!</h1>';
-        res.send(message);
-    }
+    } else {        
+        message = 'Need at least one credit!';
+    }    
+    req.flash('error', message);
+    res.redirect('/createTask');
 };
 
 exports.tasksByUser = function(req, res, next, id) {
@@ -63,35 +63,44 @@ exports.tasksByUser = function(req, res, next, id) {
 
     users.getUserById(id, function(err, results) {
         var username = results.userName;
-        var content = "<h1>Tasks Created by " + username + "</h1>";
+        var pageTitle = 'View ' + username + "'s Tasks";
+        var assignerTasks;
+        var assigneeTasks;
 
         tasks.getTasksByAssigner(id, function(err, results) {
             if (err) {
                 next(err);
-            } else if (results.length == 0) {
-                content += '<i>Nothing here yet</i>';
-            } else {
-                content += '<table><tr><td>Name</td><td>Description</td><td>Assigned To</td><td>Status</td></tr>';
-                results.forEach(function(result) {
-                    content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.userName + '</td><td>' + result.taskStatus + '</td></tr>';
-                });
+            } else if (results.length > 0) {
+                assignerTasks = new Array(results.length);
+                for (var i = 0; i<results.length;i++) {
+                    assignerTasks[i] = new Array(4);
+                    assignerTasks[i][0] = results[i].taskName;
+                    assignerTasks[i][1] = results[i].taskDescription;
+                    assignerTasks[i][2] = results[i].userName;
+                    assignerTasks[i][3] = results[i].taskStatus;
+                }
             }
-
-            content = content + '</table><br><br><h1>Tasks Assigned to ' + username + '</h1>';;
-
+            
             tasks.getTasksByAssignee(id, function(err, results) {
                 if (err) {
                     next(err);
-                } else if (results.length == 0) {
-                    content += '<i>Nothing here yet</i>';
-                } else {
-                    content += '<table><tr><td>Name</td><td>Description</td><td>Assigned By</td><td>Status</td></tr>';
-                    results.forEach(function(result) {
-                        content = content + '<tr><td>' + result.taskName + '</td><td>' + result.taskDescription + '</td><td>' + result.userName + '</td><td>' + result.taskStatus + '</td></tr>';
-                    });
-                    content += '</table>';
+                } else if (results.length > 0) {
+                    assigneeTasks = new Array(results.length);
+                    for (var i = 0; i<results.length; i++) {
+                        assigneeTasks[i] = new Array(4);
+                        assigneeTasks[i][0] = results[i].taskName;
+                        assigneeTasks[i][1] = results[i].taskDescription;
+                        assigneeTasks[i][2] = results[i].userName;
+                        assigneeTasks[i][3] = results[i].taskStatus;
+                    }
                 }
-                res.send(content);
+                res.render('viewUserTasks', {
+                    pageTitle: pageTitle,
+                    user: req.user,
+                    username: username,
+                    assignerTasks: assignerTasks,
+                    assigneeTasks: assigneeTasks
+                });
             });
         });
     });
@@ -118,9 +127,11 @@ exports.render = function(req, res, next) {
         }
 
         res.render('createTask', {
-            title: 'Task Creator',
+            pageTitle: 'Task Creator',
+            user: req.user,
             assigner: assigner,
-            assigneeList: assigneeList
+            assigneeList: assigneeList,
+            errorMsg: req.flash('error')
         });
     });
 }

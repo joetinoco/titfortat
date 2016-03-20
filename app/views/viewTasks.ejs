@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<% include components/htmlhead %>
+
+    <body>
+        <% include components/navbar %>
+        <div class="container">
+            <h1>Task List</h1>
+            <% if (!taskList) { %>
+                <p>No tasks yet. Why not <a href="/createTask">create</a> one?</p>
+            <% } else { %>
+                <table class="table table-striped">
+                    <thead>
+                        <th>Task Name</th>
+                        <th>Task Description</th>
+                        <th>Status</th>
+                        <th>Assigned By</th>
+                        <th>Assigned To</th>
+                    </thead>
+                    <tbody>
+                        <% taskList.forEach(function(task) { %>
+                            <tr>
+                                <td>
+                                    <%= task[0] %>
+                                </td>
+                                <td>
+                                    <%= task[1] %>
+                                </td>
+                                <td>
+                                    <%= task[2] %>
+                                </td>
+                                <td><a href=<%="/task/" + task[3] %>><%= task[4] %></a></td>
+                                <td><a href=<%="/task/" + task[5] %>><%= task[6] %></a></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div> <!-- container -->
+        <% include components/scripts %>
+    </body>
+
+</html>
