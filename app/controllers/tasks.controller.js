@@ -135,7 +135,10 @@ exports.getNames = function(req, res, next) {
     res.render('manageTask', {
             title: 'Manage Task',
             user: req.user,   //pass the user  object
-            tasks: results
+            tasks: results,
+            pageTitle: 'Manage task',
+            successMsg: req.flash('success') || '',
+            errorMsg: req.flash('error') || '',
         });
 
     });
@@ -149,12 +152,11 @@ exports.completeTask = function(req, res, next) {
 
     tasks.awardCredits(req.body, function(err, data) {
         if (err) {
-            console.log(err.toString());
+            req.flash('error', err.toString());
             res.redirect('/manageTask');
         } else {
-           message = '<h1>completed Task!</h1><br><table><tr><td>Task Name:</td><td>' + data.getName +
-                    '</td></tr></table>';
-                     res.send(message);
+           req.flash('success', 'Great! User received the credits for the completed task.');
+           res.redirect('/manageTask');
         }
     });
 }

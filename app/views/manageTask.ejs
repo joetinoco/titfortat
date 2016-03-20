@@ -1,39 +1,40 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>
-        <%=title %>
-    </title>
-</head>
+<html lang="en">
+<% include components/htmlhead %>
 
 <body>
-    <h1><%=title %></h1>
+    <% include components/navbar %>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-sm-12 col-md-6">
+                <h1>Approve a task</h1>
+                <% if (typeof errorMsg !== 'undefined') { %>
+                    <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+                <% } %>
+                <% if (typeof successMsg !== 'undefined') { %>
+                    <p id="successMsg" class="text-success"><%= successMsg %></p>
+                <% } %>
 
-    <form action="/manageTask" method="post">
-        <table>
-
-           <tr>
-                <td>Select Task:</td>
-                <td>
-                    <select name="taskId">
-
-                        <% for(var i=0; i < tasks.length; i++) { %>
-                            <option value="<%= tasks[i].taskId %>"><%= tasks[i].taskName %></option>
-
-
-                        <% } %>
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="text-align:center" , colspan="2">
-                    <input type="submit" value="Verify completion!" />
-                </td>
-            </tr>
-        </table>
-    </form>
+                <% if (tasks.length > 0) { %>
+                  <form id="frmCreateInvite" action="/manageTask" method="post">
+                      <div class="form-group">
+                        <label for="taskId">Select the completed task</label>
+                        <select name="taskId">
+                            <% for(var i=0; i < tasks.length; i++) { %>
+                                <option value="<%= tasks[i].taskId %>"><%= tasks[i].taskName %></option>
+                            <% } %>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-default">Mark as completed</button>
+                  </form>
+                <% } else { %>
+                  <p>You haven't created a task yet. <a href="/createTask">Create one now?</a></p>
+                <% }  %>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div> <!-- container -->
+    <% include components/scripts %>
 </body>
-
 </html>
