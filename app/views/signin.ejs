@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+
+User sign in form
+==================
+
+-->
+<html lang="en">
+  <% include components/htmlhead %>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-sm-12 col-md-6">
+          <h1>Sign in</h1>
+          <form id="frmSignIn" action="signin" method="post">
+            <div class="form-group">
+              <label for="username">User name</label>
+              <input type="text" class="form-control" name="username" placeholder="">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" placeholder="">
+            </div>
+            <button type="submit" class="btn btn-default">Sign in</button>
+            <% if (typeof errorMsg !== 'undefined') { %>
+              <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+            <% } %>
+          </form>
+
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div><!-- container -->
+    <% include components/scripts %>
+  </body>
+</html>

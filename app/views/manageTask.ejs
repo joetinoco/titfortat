@@ -1,0 +1,39 @@
+<! DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%=title %>
+    </title>
+</head>
+
+<body>
+    <h1><%=title %></h1>
+    
+    <form action="/manageTask" method="post">
+        <table>
+         
+           <tr>
+                <td>Select Task:</td>
+                <td>
+                    <select name="task">
+                        
+                        <% for(var i=0; i < tasks.length; i++) { %>
+                            <option value="<%= tasks[i].taskId %>"><%= tasks[i].taskName %></option>
+                        
+                        
+                        <% } %>
+                    </select>
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="text-align:center" , colspan="2">
+                    <input type="submit" value="Verify completion!" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+</html>

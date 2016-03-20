@@ -1,0 +1,30 @@
+{
+  "name": "TitForTat",
+  "version": "0.0.1",
+  "description": "COMP213 project.",
+  "main": "server.js",
+  "engine": {
+    "node": "4.3.0",
+    "npm": "2.14.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/joetinoco/titfortat.git"
+  },
+  "author": "Joseph Tinoco, Jihoo Yoo, Sean Smith, Kimberley Stennett, Winnie Chung",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-node": "^0.1.0",
+    "body-parser": "^1.14.2",
+    "compression": "^1.6.1",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "method-override": "^2.3.5",
+    "morgan": "^1.7.0",
+    "mysql": "^2.10.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  }
+}
