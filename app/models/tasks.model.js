@@ -93,6 +93,7 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
         }
         callback(false, results);
     });
+
 }
 
 
@@ -150,5 +151,6 @@ exports.awardCredits = function(user,callback) {
         }
         callback(false, results);
     });*/
+
 
 }

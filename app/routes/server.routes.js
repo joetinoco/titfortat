@@ -49,6 +49,7 @@ module.exports = function(app) {
     app.get('/newInvite', invitation.renderNewInvite);
     app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
 
+
     
     //Jiho
    app.get('/manageTask', manageTask.getNames);
@@ -56,5 +57,6 @@ module.exports = function(app) {
        .get(manageTask.getNames)
         .post(manageTask.completeTask);
   
+
 
 }
