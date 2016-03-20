@@ -1,26 +1,40 @@
-<! DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
     <% include components/htmlhead %>
-    
+
     <body>
-        <% include components/navbar %>        
-        <form action="/newInvite" method="post">
-            <table align="center">
-                <tr>
-                    <td> <label>Email:</label>             </td>
-                    <td> <input type="text" name="invitesEmail" required /> </td>
-                </tr>
-                                
-                <tr>
-                    <td> <input type="submit" value="Submit" /> </td>
-                </tr>
-            </table>
-            <% if (typeof errorMsg !== 'undefined') { %>
-              <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
-            <% } %>
-        </form>
-        
-               
+        <% include components/navbar %>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-sm-12 col-md-6">
+                    <h1>Invite a user to a group</h1>
+                    <% if (typeof errorMsg !== 'undefined') { %>
+                        <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+                    <% } %>
+
+                    <% if (userGroupsOwned.length > 0) { %>
+                      <form id="frmCreateInvite" action="/newInvite" method="post">
+                          <div class="form-group">
+                            <label for="inviteeEmail">Email</label>
+                            <input type="email" name="inviteeEmail" class="form-control" required/>
+                            <label for="groupId">Invite to which group?</label>
+                            <select name="groupId" class="form-control">
+                                <% userGroupsOwned.forEach(function(group) { %>
+                                  <option value="<%- group.groupId %>"><%- group.groupName %></option>
+                                <% }); %>
+                            </select>
+                          </div>
+                          <button type="submit" class="btn btn-default">Submit</button>
+                      </form>
+                    <% } else { %>
+                      <p>You can't send invitations because you don't own a group. <a href="/createGroup">Create one now?</a></p>
+                    <% }  %>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div> <!-- container -->
+        <% include components/scripts %>
     </body>
 </html>

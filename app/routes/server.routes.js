@@ -47,8 +47,5 @@ module.exports = function(app) {
 
     //Invitations
     app.get('/newInvite', invitation.renderNewInvite);
-    app.route('/newInvite')
-         
-            .post(invitation.create);   //replace with invitation exports.xyz name (xyz part)
-    app.param('user', task.tasksByUser);
+    app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
 }
