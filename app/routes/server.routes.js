@@ -35,18 +35,20 @@ module.exports = function(app) {
     app.route('/tasks')
         .get(task.read)
         .post(task.create);
-    app.route('/tasks/:user')
-        .get(task.read)
-        
+    app.route('/task/:user')
+        .get(task.showAll);
+
+    app.param('user', task.allByUser);
+
     //groups
     app.get('/createGroup', groupController.renderGroupCreator);
     app.route('/createGroup')
-            .post(groupController.create);    
-        
+            .post(groupController.create);
+
     //Invitations
     app.get('/newInvite', invitation.renderNewInvite);
     app.route('/newInvite')
-            .post(invitation.createInvite);   //replace with invitation exports.xyz name (xyz part)
-
+         
+            .post(invitation.create);   //replace with invitation exports.xyz name (xyz part)
     app.param('user', task.tasksByUser);
 }

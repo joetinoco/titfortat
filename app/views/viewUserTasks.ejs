@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<% include components/htmlhead %>
+
+    <body>
+        <% include components/navbar %>
+        <div class="container">
+            <h1>Tasks Created by <%= username %></h1>
+            <% if (assignerTasks == '') { %>
+                <p id="errorMsg" class="text-danger"><i>Nothing here yet</i></p>
+            <% } else { %>
+                <table class="table table-striped">
+                    <thead>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                    </thead>
+                    <tbody>
+                        <% assignerTasks.forEach(function(task) { %>
+                            <tr>
+                                <td>
+                                    <%= task[0] %>
+                                </td>
+                                <td>
+                                    <%= task[1] %>
+                                </td>
+                                <td>
+                                    <%= task[2] %>
+                                </td>
+                                <td>
+                                    <%= task[3] %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+            <br><br>
+            <h1>Tasks Assigned to <%= username %></h1>
+            <% if (assigneeTasks == '') { %>
+                <p id="errorMsg" class="text-danger"><i>Nothing here yet</i></p>
+            <% } else { %>
+                <table class="table table-striped">
+                    <thead>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Assigned By</th>
+                        <th>Status</th>
+                    </thead>
+                    <tbody>
+                        <% assigneeTasks.forEach(function(task) { %>
+                            <tr>
+                                <td>
+                                    <%= task[0] %>
+                                </td>
+                                <td>
+                                    <%= task[1] %>
+                                </td>
+                                <td>
+                                    <%= task[2] %>
+                                </td>
+                                <td>
+                                    <%= task[3] %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div> <!-- container -->
+        <% include components/scripts %>
+    </body>
+
+</html>
