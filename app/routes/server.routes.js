@@ -49,14 +49,10 @@ module.exports = function(app) {
     app.get('/newInvite', invitation.renderNewInvite);
     app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
 
-
-    
     //Jiho
-   app.get('/manageTask', manageTask.getNames);
-   app.route('/manageTask')
-       .get(manageTask.getNames)
-        .post(manageTask.completeTask);
-  
+   app.get('/manageTask', task.getNames);
+   app.post('/manageTask', task.completeTask);
+
 
 
 }

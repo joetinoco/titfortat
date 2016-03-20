@@ -1,4 +1,4 @@
-<! DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -9,24 +9,24 @@
 
 <body>
     <h1><%=title %></h1>
-    
+
     <form action="/manageTask" method="post">
         <table>
-         
+
            <tr>
                 <td>Select Task:</td>
                 <td>
-                    <select name="task">
-                        
+                    <select name="taskId">
+
                         <% for(var i=0; i < tasks.length; i++) { %>
                             <option value="<%= tasks[i].taskId %>"><%= tasks[i].taskName %></option>
-                        
-                        
+
+
                         <% } %>
                     </select>
                 </td>
             </tr>
-            
+
             <tr>
                 <td style="text-align:center" , colspan="2">
                     <input type="submit" value="Verify completion!" />
