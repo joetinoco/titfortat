@@ -13,7 +13,7 @@ exports.read = function(req, res) {
         if (err) {
             console.log(err.toString());
             res.redirect('/');
-        } else if (data.length > 0) {            
+        } else if (data.length > 0) {
             taskList = new Array(data.length);
             for (var i=0; i<taskList.length; i++) {
                 taskList[i] = new Array(7);
@@ -50,14 +50,14 @@ exports.create = function(req, res, next) {
                 message = 'Task created!';
             }
         });
-    } else {        
+    } else {
         message = 'Need at least one credit!';
-    }    
+    }
     req.flash('error', message);
     res.redirect('/createTask');
 };
 
-exports.tasksByUser = function(req, res, next, id) {
+exports.allByUser = function(req, res, next, id) {
     var tasks = require('../models/tasks.model');
     var users = require('../models/users.model');
 
@@ -69,7 +69,9 @@ exports.tasksByUser = function(req, res, next, id) {
 
         tasks.getTasksByAssigner(id, function(err, results) {
             if (err) {
-                next(err);
+              if (err.code === 'Tasks not found'){
+                assignerTasks = [];
+              } else next(err);
             } else if (results.length > 0) {
                 assignerTasks = new Array(results.length);
                 for (var i = 0; i<results.length;i++) {
@@ -80,10 +82,12 @@ exports.tasksByUser = function(req, res, next, id) {
                     assignerTasks[i][3] = results[i].taskStatus;
                 }
             }
-            
+
             tasks.getTasksByAssignee(id, function(err, results) {
                 if (err) {
-                    next(err);
+                  if (err.code === 'Tasks not found'){
+                    assigneeTasks = [];
+                  } else next(err);
                 } else if (results.length > 0) {
                     assigneeTasks = new Array(results.length);
                     for (var i = 0; i<results.length; i++) {
@@ -94,16 +98,25 @@ exports.tasksByUser = function(req, res, next, id) {
                         assigneeTasks[i][3] = results[i].taskStatus;
                     }
                 }
-                res.render('viewUserTasks', {
-                    pageTitle: pageTitle,
-                    user: req.user,
-                    username: username,
-                    assignerTasks: assignerTasks,
-                    assigneeTasks: assigneeTasks
-                });
+
+                req.pageTitle = pageTitle;
+                req.username = username;
+                req.assignerTasks = assignerTasks;
+                req.assigneeTasks = assigneeTasks;
+                next();
             });
         });
     });
+};
+
+exports.showAll = function(req, res, next) {
+  res.render('viewUserTasks', {
+      pageTitle: req.pageTitle,
+      user: req.user,
+      username: req.username,
+      assignerTasks: req.assignerTasks,
+      assigneeTasks: req.assigneeTasks
+  });
 };
 
 exports.render = function(req, res, next) {
