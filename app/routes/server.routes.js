@@ -37,8 +37,11 @@ module.exports = function(app) {
         .post(task.create);
     app.route('/task/:user')
         .get(task.showAll);
-
     app.param('user', task.allByUser);
+    app.route('/executeTasks')
+        .get(task.showAssigneeTasks);
+    app.post('/tasks/:taskId', task.renderAssigneeTasks); //todo: cannot post tasks/id
+    app.param('taskId', task.updateAssigneeTasks);
 
     //groups
     app.get('/createGroup', groupController.renderGroupCreator);

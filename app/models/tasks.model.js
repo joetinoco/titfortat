@@ -77,7 +77,7 @@ exports.getTasksByAssigner = function(assignerId, callback) {
     });
 }
 
-// Search an assignee, return a user
+// Search an assignee, return a list of tasks
 exports.getTasksByAssignee = function(assigneeId, callback) {
     var db = require('../models/db.model')();
     db.query({
@@ -95,6 +95,24 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
         callback(false, results);
     });
 
+}
+
+exports.updateAssigneeTask = function(task, callback) {
+    var db = require('../models/db.model')();
+    db.query({
+        sql: 'update tasks set taskStatus = ? where taskId = ?',
+        values: [task.status, task.id]
+    }, function(err, results, fields) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        if (results.length == 0) {
+            callback({ code: 'Tasks not found' });
+            return;
+        }
+        callback(false, results);
+    });
 }
 
 
