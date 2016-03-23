@@ -47,14 +47,20 @@ exports.create = function(req, res, next) {
             if (err) {
                 message = 'Creation failed: ' + err.code;
             } else {
-                message = 'Task created!';
+                tasks.useCredits(req.user, function(err, results) {
+                    if (!err) {
+                        message = 'Task created!';
+                        req.flash('error', message);
+                        res.redirect('/createTask');
+                    }                   
+                });                
             }
         });
     } else {
         message = 'Need at least one credit!';
-    }
-    req.flash('error', message);
-    res.redirect('/createTask');
+        req.flash('error', message);
+        res.redirect('/createTask');
+    }    
 };
 
 exports.allByUser = function(req, res, next, id) {
@@ -184,9 +190,9 @@ exports.render = function(req, res, next) {
         res.render('createTask', {
             pageTitle: 'Task Creator',
             user: req.user,
+            errorMsg: req.flash('error'),
             assigner: assigner,
-            assigneeList: assigneeList,
-            errorMsg: req.flash('error')
+            assigneeList: assigneeList
         });
     });
 }
