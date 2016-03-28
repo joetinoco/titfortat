@@ -14,7 +14,10 @@
                 <label for="name">Group Name</label>
                 <input type="text" name="name" class="form-control" required />
                 <% if (typeof errorMsg !== 'undefined') { %>
-                  <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+                    <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
+                <% } %>
+                <% if (typeof successMsg !== 'undefined') { %>
+                    <p id="successMsg" class="text-success"><%= successMsg %></p>
                 <% } %>
                 </div>
                 <button type="submit" class="btn btn-default">Submit</button>

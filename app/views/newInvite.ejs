@@ -13,6 +13,9 @@
                     <% if (typeof errorMsg !== 'undefined') { %>
                         <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
                     <% } %>
+                    <% if (typeof successMsg !== 'undefined') { %>
+                        <p id="successMsg" class="text-info"><%= successMsg %></p>
+                    <% } %>
 
                     <% if (userGroupsOwned.length > 0) { %>
                       <form id="frmCreateInvite" action="/newInvite" method="post">

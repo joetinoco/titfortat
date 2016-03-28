@@ -15,7 +15,9 @@ exports.renderNewInvite = function(req, res, next){
     res.render('newInvite', {
         pageTitle: 'Create New Invitation',
         user: req.user,
-        userGroupsOwned: results
+        userGroupsOwned: results,
+        errorMsg: req.flash('error'),
+        successMsg: req.flash('success')
     });
   });
 
@@ -23,13 +25,30 @@ exports.renderNewInvite = function(req, res, next){
 
 exports.newInvite = function(req, res, next)
 {
-    var invitations = require('../models/invitations.model');
+    var invitations = require('../models/invitations.model'),
+      email = require('./email.controller');
+
     invitations.newInvite(req.body, function(err, data){
     if (err){
       // invitation not created
-      console.log('Model crapped');
       req.flash('error', 'Invitation Failed: ' + err.code);
+    } else {
+      // Send invitation email
+      email.send(req.body.inviteeEmail,
+        'Invitation to join TitForTat', // Subject
+        'Hi there!<br/>' +
+        'You were invited to join the Tit for Tat app. To do so, please click the link below:<br/>'+
+        '<a href="' + process.env.BASE_URL + '/invite/' + data.insertId + '">Accept invitation</a><br>' +
+        'Alternatively, copy and paste this link: ' + process.env.BASE_URL + '/invite/' + data.insertId,
+        function(error, response){
+          if (error){
+            console.log(error);
+            req.flash('error', 'Error emailing invitation to user: ' + error);
+          } else {
+            req.flash('success', 'User invited successfully.');
+          }
+          res.redirect('/newInvite'); //goes back to invite page : create another invite
+        });
     }
-    res.redirect('/newInvite'); //goes back to invite page : create another invite
   });
 }
