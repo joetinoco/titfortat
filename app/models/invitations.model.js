@@ -40,3 +40,40 @@ exports.newInvite = function(invite, callback){
       callback(false, results); //callback that send data to controller
   });//end query
 }
+
+//Retrieve a single invite
+exports.pendingById = function(inviteId, callback){
+  var db = require('../models/db.model')();
+
+  db.query({
+      sql: 'SELECT i.inviteId, g.groupName FROM invites AS i, groups AS g '+
+      'WHERE i.inviteId = ? AND i.status = "Pending" AND i.groupId = g.groupId',
+      values:[inviteId]
+  }, function (err, results, fields) {
+      db.end(); //close db connection
+      if (err){
+          console.log(err.toString());
+          callback(err);
+          return;
+      }
+      callback(false, results);
+  });
+}
+
+// Mark an invite as accepted
+exports.markAccepted = function(inviteId, callback){
+  var db = require('../models/db.model')();
+
+  db.query({
+      sql: 'UPDATE invites SET status = "Accepted" WHERE inviteId = ?',
+      values:[inviteId]
+  }, function (err, results, fields) {
+      db.end(); //close db connection
+      if (err){
+          console.log(err.toString());
+          callback(err);
+          return;
+      }
+      callback(false, results);
+  });
+}

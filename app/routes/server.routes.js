@@ -50,7 +50,9 @@ module.exports = function(app) {
 
     //Invitations
     app.get('/newInvite', invitation.renderNewInvite);
-    app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
+    app.post('/newInvite', invitation.newInvite);
+    app.get('/invitation/:inviteId', invitation.acceptInvite);
+    app.param('inviteId', invitation.getInvite);
 
     //Jiho
    app.get('/manageTask', task.getNames);
