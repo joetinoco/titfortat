@@ -1,5 +1,7 @@
 var invitations = require('../models/invitations.model'),
-email = require('./email.controller');
+    groups = require('../models/groups.model'),
+    users = require('../models/users.model'),
+    email = require('./email.controller');
 
 exports.renderNewInvite = function(req, res, next){
   // Retrieve the list of groups the user owns
@@ -69,32 +71,50 @@ exports.getInvite = function (req, res, next, inviteId) {
   });
 }
 
-exports.acceptInvite = function (req, res) {
-  var invitationIsValid = true, pageTitle = 'Invitation accepted!';
+exports.acceptInvite = function (req, res, next) {
+  req.invitationIsValid = true;
+  req.userExists = true;
+  req.pageTitle = 'Invitation accepted!';
   if (!req.invite){
-    invitationIsValid = false;
-    pageTitle = 'Error!'
+    // Bad invitation link
+    req.invitationIsValid = false;
+    req.pageTitle = 'Error!'
   } else {
-    invitations.markAccepted(req.invite.inviteId, function (err) {
-      if (err){
-        invitationIsValid = false;
-        pageTitle = 'Error!'
-        req.flash('error', 'Error updating invite: ' + err.toString());
-      }
-      res.render('acceptInvite', {
-        invitationIsValid: invitationIsValid,
-        user: req.user,
-        pageTitle: pageTitle,
-        errorMsg: req.flash('error'),
-        groupName: req.invite.groupName
+    // Check if the invited user exists
+    if (req.invite.userId === null){
+      req.userExists = false;
+      req.pageTitle = 'Error!'
+    } else {
+      // Add user to group
+      groups.addUserToGroup(req.invite.userId, req.invite.groupId, function(err){
+        if (err){
+          req.invitationIsValid = false;
+          req.pageTitle = 'Error!'
+          req.flash('error', 'Error adding user to group: ' + err.toString());
+          return next();
+        }
+        // Mark invitation as accepted
+        invitations.markAccepted(req.invite.inviteId, function (err) {
+          if (err){
+            req.invitationIsValid = false;
+            req.pageTitle = 'Error!'
+            req.flash('error', 'Error updating invite: ' + err.toString());
+          }
+          return next();
+        });
       });
-    })
+    }
   }
+  next();
+}
+
+exports.renderAcceptanceFeedback = function (req, res) {
   res.render('acceptInvite', {
-    invitationIsValid: invitationIsValid,
+    invitationIsValid: req.invitationIsValid,
+    userExists: req.userExists,
     user: req.user,
-    pageTitle: pageTitle,
+    pageTitle: req.pageTitle,
     errorMsg: req.flash('error'),
-    groupName: ''
+    groupName: (req.invite ? req.invite.groupName : '')
   });
 }

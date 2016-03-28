@@ -51,7 +51,7 @@ module.exports = function(app) {
     //Invitations
     app.get('/newInvite', invitation.renderNewInvite);
     app.post('/newInvite', invitation.newInvite);
-    app.get('/invitation/:inviteId', invitation.acceptInvite);
+    app.get('/invitation/:inviteId', invitation.acceptInvite, invitation.renderAcceptanceFeedback);
     app.param('inviteId', invitation.getInvite);
 
     //Jiho

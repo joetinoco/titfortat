@@ -49,7 +49,7 @@ exports.groupsOwnedById = function(userId, callback){
           return;
       }
       if (results.length == 0) {
-          callback(true, { code: 'User does not own any groups' });
+          callback({ code: 'User does not own any groups' });
           return;
       }
       callback(false, results);

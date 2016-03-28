@@ -10,8 +10,13 @@
                 <div class="col-md-3"></div>
                 <div class="col-sm-12 col-md-6">
                     <% if (invitationIsValid) { %>
-                        <h1>Invitation accepted!</h1>
-                        <p>Welcome to the group <em><%- groupName %></em>! <a href="/signin">Sign in</a> to view the group.</p>
+                        <% if (userExists) { %>
+                            <h1>Invitation accepted!</h1>
+                            <p>Welcome to the group <em><%- groupName %></em>! <a href="/signin">Sign in</a> to view the group.</p>
+                        <% } else { %>
+                            <h1>You need to sign up first</h1>
+                            <p>To accept this invitation, you need to be a member of our site. <a href="/signup">Sign up</a> using the same email where you got the invitation, then try clicking the invite link again.</p>
+                        <% } %>
                     <% } else { %>
                         <h1>Something went wrong</h1>
                         <p id="errorMsg" class="text-danger"><%= errorMsg %></p>

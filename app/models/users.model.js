@@ -66,6 +66,22 @@ exports.getUserById = function(userId, callback){
   });
 }
 
+// Search a user email, return a user
+exports.getUserByEmail = function(userEmail, callback){
+  var db = require('../models/db.model')();
+  db.query({
+    sql: 'SELECT * FROM users WHERE userEmail = ?',
+    values: [userEmail]
+  }, function (err, results, fields) {
+    db.end();
+    if (err){
+      callback(err);
+      return;
+    }
+    callback(false, results[0]);
+  });
+}
+
 // Check user name + password for authentication
 exports.authenticate = function(user, password){
   return bcrypt.compareSync(password, user.userPassword.toString());
