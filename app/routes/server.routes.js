@@ -38,8 +38,8 @@ module.exports = function(app) {
 
     app.get('/createTask', task.render);
     app.route('/tasks')
-        .get(task.read)
-        .post(task.create);
+        .get(task.read);
+    app.post('/tasks', upload.single('helpFile'), task.create);
     app.route('/task/:user')
         .get(task.showAll);
     app.param('user', task.allByUser);

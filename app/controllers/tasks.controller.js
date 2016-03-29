@@ -43,7 +43,7 @@ exports.create = function(req, res, next) {
     var tasks = require('../models/tasks.model');
     var message;
     if (req.user.userCredits >= 1) {
-        tasks.createTask(req.body, function(err, data) {
+        tasks.createTask(req.body, req.file, function(err, data) {
             if (err) {
                 message = 'Creation failed: ' + err.code;
             } else {
@@ -234,8 +234,9 @@ exports.renderAssigneeTasks = function(req, res, next) {
 }
 
 exports.render = function(req, res, next) {
-    var assigner = '<option value="' + req.user.userId + '" selected>' + req.user.userName + '</option>'; // current user
-    var assigneeList = '';
+    //var assigner = '<option value="' + req.user.userId + '" selected>' + req.user.userName + '</option>'; // current user
+    var assigner = req.user;
+    var assigneeList;
 
     var db = require('../models/db.model')();
 
@@ -248,9 +249,12 @@ exports.render = function(req, res, next) {
             console.log(err.toString());
             next(err);
         } else if (results.length > 0) {
-            results.forEach(function(result) {
-                assigneeList = assigneeList + '<option value="' + result.userId + '">' + result.userName + '</option>';
-            });
+            assigneeList = new Array(results.length);
+            for (var i=0;i<results.length;i++) {
+                assigneeList[i] = new Array(2);
+                assigneeList[i][0] = results[i].userId;
+                assigneeList[i][1] = results[i].userName;
+            }
         }
 
         res.render('createTask', {
