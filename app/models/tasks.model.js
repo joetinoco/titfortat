@@ -22,17 +22,19 @@ exports.list = function(callback) {
 }
 
 // Insert new task in the DB
-exports.createTask = function(task, callback) {
+exports.createTask = function(task, file, callback) {
     var db = require('../models/db.model')();
     task.credits = 1; // Default for new tasks
     task.status = "Pending";
+    
+    var serializedFile = file ? JSON.stringify(file) : null;
 
     // Write to the DB
     db.query({
         sql: 'INSERT INTO tasks ' +
-        '(taskName, taskDescription, taskCredits, taskStatus, taskmasterId, assigneeId) ' +
-        'VALUES (?,?,?,?,?,?);',
-        values: [task.name, task.description, task.credits, task.status, task.assigner, task.assignee]
+        '(taskName, taskDescription, taskCredits, taskStatus, taskmasterId, assigneeId, helpFile) ' +
+        'VALUES (?,?,?,?,?,?,?);',
+        values: [task.name, task.description, task.credits, task.status, task.assigner, task.assignee, serializedFile]
     }, function(err, results, fields) {
         db.end();
         if (err) {
