@@ -11,7 +11,11 @@ module.exports = function(app) {
         task = require('../controllers/tasks.controller.js'),
         invitation = require('../controllers/invitations.controller.js'),
         groupController = require('../controllers/groups.controller.js'),
-        passport = require('passport');
+        passport = require('passport'),
+        // Multer is used for file uploads
+        // (documentation: https://github.com/expressjs/multer )
+        multer  = require('multer'),
+        upload = multer({ dest: 'uploads/' });
 
     app.get('/', index.render);
 
@@ -40,8 +44,9 @@ module.exports = function(app) {
     app.param('user', task.allByUser);
     app.route('/executeTasks')
         .get(task.showAssigneeTasks);
-    app.post('/tasks/:taskId', task.renderAssigneeTasks); //todo: cannot post tasks/id
-    app.param('taskId', task.updateAssigneeTasks);
+    // app.post('/tasks/:taskId', upload.single('proofFile'), task.renderAssigneeTasks); //todo: cannot post tasks/id
+    // app.param('taskId', task.updateAssigneeTasks);
+    app.post('/tasks/update', upload.single('proofFile'), task.updateAssigneeTasks, task.renderAssigneeTasks);
 
     //groups
     app.get('/createGroup', groupController.renderGroupCreator);

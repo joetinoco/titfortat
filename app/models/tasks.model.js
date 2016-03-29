@@ -97,11 +97,14 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
 
 }
 
-exports.updateAssigneeTask = function(task, callback) {
+exports.updateAssigneeTask = function(task, file, callback) {
+    serializedFile = file ? JSON.stringify(file) : null;
+    console.log('Serialized file:');
+    console.log(serializedFile);
     var db = require('../models/db.model')();
     db.query({
-        sql: 'update tasks set taskStatus = ? where taskId = ?',
-        values: [task.status, task.id]
+        sql: 'update tasks set taskStatus = ?, proofFile = ? where taskId = ?',
+        values: [task.status, serializedFile , task.id]
     }, function(err, results, fields) {
         if (err) {
             callback(err);

@@ -167,10 +167,9 @@ exports.completeTask = function(req, res, next) {
     });
 }
 
-exports.updateAssigneeTasks = function(req, res, next, id) {
+exports.updateAssigneeTasks = function(req, res, next) {
     var tasks = require('../models/tasks.model');
-    var formName = 'update' + id;
-    tasks.updateAssigneeTask(req.body, function(err, results) {
+    tasks.updateAssigneeTask(req.body, req.file, function(err, results) {
         if (err) {
             req.flash('error', err.toString());
         } else {
