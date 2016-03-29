@@ -20,12 +20,13 @@
                   <form id="frmCreateInvite" action="/manageTask" method="post">
                       <div class="form-group">
                         <label for="taskId">Select the completed task</label>
-                        <select name="taskId">
+                        <select name="taskId" id="taskSelect">
                             <% for(var i=0; i < tasks.length; i++) { %>
                                 <option value="<%= tasks[i].taskId %>"><%= tasks[i].taskName %></option>
                             <% } %>
                         </select>
                       </div>
+                      <div id="proofFile"><a id="proofFileLink" href="">View proof of completion</a></div>
                       <button type="submit" class="btn btn-default">Mark as completed</button>
                   </form>
                 <% } else { %>

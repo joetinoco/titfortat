@@ -63,6 +63,23 @@ exports.create = function(req, res, next) {
     }
 };
 
+exports.byId = function (req, res, next, id) {
+    var tasks = require('../models/tasks.model');
+    tasks.taskById(id, function (err, task) {
+      if(err){
+        req.flash('error', 'Error retrieving the task.');
+        next();
+      } else {
+        if (task.length < 1){
+          req.flash('error', 'Task does not exist');
+          return next();
+        }
+        req.task = task[0];
+        return next();
+      }
+    });
+}
+
 exports.allByUser = function(req, res, next, id) {
     var tasks = require('../models/tasks.model');
     var users = require('../models/users.model');

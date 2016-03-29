@@ -21,6 +21,25 @@ exports.list = function(callback) {
     });
 }
 
+exports.taskById = function(id, callback) {
+    var db = require('../models/db.model')();
+    db.query({
+        sql: 'select * from tasks where taskId = ?',
+        values: [id]
+    }, function(err, results, fields) {
+        db.end();
+        if (err) {
+            callback(err);
+            return;
+        }
+        if (results.length == 0) {
+            callback({ code: 'Task not found' });
+            return;
+        }
+        callback(false, results);
+    });
+}
+
 // Insert new task in the DB
 exports.createTask = function(task, callback) {
     var db = require('../models/db.model')();

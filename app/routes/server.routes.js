@@ -9,6 +9,7 @@ module.exports = function(app) {
     var index = require('../controllers/index.controller'),
         user = require('../controllers/users.controller'),
         task = require('../controllers/tasks.controller.js'),
+        files = require('../controllers/files.controller.js'),
         invitation = require('../controllers/invitations.controller.js'),
         groupController = require('../controllers/groups.controller.js'),
         passport = require('passport'),
@@ -44,8 +45,6 @@ module.exports = function(app) {
     app.param('user', task.allByUser);
     app.route('/executeTasks')
         .get(task.showAssigneeTasks);
-    // app.post('/tasks/:taskId', upload.single('proofFile'), task.renderAssigneeTasks); //todo: cannot post tasks/id
-    // app.param('taskId', task.updateAssigneeTasks);
     app.post('/tasks/update', upload.single('proofFile'), task.updateAssigneeTasks, task.renderAssigneeTasks);
 
     //groups
@@ -63,6 +62,8 @@ module.exports = function(app) {
    app.get('/manageTask', task.getNames);
    app.post('/manageTask', task.completeTask);
 
-
+   // File download Routes
+   app.get('/task/:taskId/proof', files.getProofFile);
+   app.param('taskId', task.byId)
 
 }
