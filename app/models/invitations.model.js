@@ -40,3 +40,43 @@ exports.newInvite = function(invite, callback){
       callback(false, results); //callback that send data to controller
   });//end query
 }
+
+//Retrieve a single invite
+exports.pendingById = function(inviteId, callback){
+  var db = require('../models/db.model')();
+
+  db.query({
+      sql: 'SELECT i.inviteId, i.groupId, i.inviteeEmail, g.groupName, u.userId '+
+      'FROM invites AS i '+
+      'INNER JOIN groups AS g ON (i.groupId = g.groupId) ' +
+      'LEFT JOIN users as u ON (i.inviteeEmail = u.userEmail) ' +
+      'WHERE i.inviteId = ? AND i.status = "Pending"',
+      values:[inviteId]
+  }, function (err, results, fields) {
+      db.end(); //close db connection
+      if (err){
+          console.log(err.toString());
+          callback(err);
+          return;
+      }
+      callback(false, results);
+  });
+}
+
+// Mark an invite as accepted
+exports.markAccepted = function(inviteId, callback){
+  var db = require('../models/db.model')();
+
+  db.query({
+      sql: 'UPDATE invites SET status = "Accepted" WHERE inviteId = ?',
+      values:[inviteId]
+  }, function (err, results, fields) {
+      db.end(); //close db connection
+      if (err){
+          console.log(err.toString());
+          callback(err);
+          return;
+      }
+      callback(false, results);
+  });
+}

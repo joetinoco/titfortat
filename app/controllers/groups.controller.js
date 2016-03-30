@@ -6,7 +6,7 @@
 */
 
 exports.create = function(req, res, next) {
-     if(!req.user){
+  if(!req.user){
     res.send('You are not logged in.<br/><a href="/signin">Log in</a> or <a href="/signup">sign up</a>');
   } else {
 
@@ -19,8 +19,8 @@ exports.create = function(req, res, next) {
                 } else{
                     console.log('Group created');
 
-                    req.flash('Feedback', 'Success. Group Created');
-                    res.redirect('/');
+                    req.flash('success', 'Success. Group Created.');
+                    res.redirect('/createGroup');
                 }//else
             })//creatgroup
 
@@ -32,6 +32,7 @@ exports.renderGroupCreator = function(req, res, next){
     res.render('groupCreator', {
         pageTitle: 'Create a Group',
         errorMsg: req.flash('Feedback', ''),
+        successMsg: req.flash('success', ''),
         user: req.user
     });
 }//render
@@ -48,7 +49,7 @@ exports.groupsOwnedById = function(userId, callback){
           return;
       }
       if (results.length == 0) {
-          callback(true, { code: 'User does not own any groups' });
+          callback({ code: 'User does not own any groups' });
           return;
       }
       callback(false, results);

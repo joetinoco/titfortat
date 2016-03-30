@@ -9,9 +9,14 @@ module.exports = function(app) {
     var index = require('../controllers/index.controller'),
         user = require('../controllers/users.controller'),
         task = require('../controllers/tasks.controller.js'),
+        files = require('../controllers/files.controller.js'),
         invitation = require('../controllers/invitations.controller.js'),
         groupController = require('../controllers/groups.controller.js'),
-        passport = require('passport');
+        passport = require('passport'),
+        // Multer is used for file uploads
+        // (documentation: https://github.com/expressjs/multer )
+        multer  = require('multer'),
+        upload = multer({ dest: 'uploads/' });
 
     app.get('/', index.render);
 
@@ -33,15 +38,14 @@ module.exports = function(app) {
 
     app.get('/createTask', task.render);
     app.route('/tasks')
-        .get(task.read)
-        .post(task.create);
+        .get(task.read);
+    app.post('/tasks', upload.single('helpFile'), task.create);
     app.route('/task/:user')
         .get(task.showAll);
     app.param('user', task.allByUser);
     app.route('/executeTasks')
         .get(task.showAssigneeTasks);
-    app.post('/tasks/:taskId', task.renderAssigneeTasks); //todo: cannot post tasks/id
-    app.param('taskId', task.updateAssigneeTasks);
+    app.post('/tasks/update', upload.single('proofFile'), task.updateAssigneeTasks, task.renderAssigneeTasks);
 
     //groups
     app.get('/createGroup', groupController.renderGroupCreator);
@@ -50,7 +54,9 @@ module.exports = function(app) {
 
     //Invitations
     app.get('/newInvite', invitation.renderNewInvite);
-    app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
+    app.post('/newInvite', invitation.newInvite);
+    app.get('/invitation/:inviteId', invitation.acceptInvite, invitation.renderAcceptanceFeedback);
+    app.param('inviteId', invitation.getInvite);
 
     //ManageTask
    app.get('/manageTask', task.getNames);
@@ -65,6 +71,9 @@ module.exports = function(app) {
 
  
 
-
+   // File download Routes
+   app.get('/task/:taskId/proof', files.getProofFile);
+   app.get('/task/:taskId/help', files.getHelpFile);
+   app.param('taskId', task.byId)
 
 }

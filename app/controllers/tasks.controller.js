@@ -43,7 +43,7 @@ exports.create = function(req, res, next) {
     var tasks = require('../models/tasks.model');
     var message;
     if (req.user.userCredits >= 1) {
-        tasks.createTask(req.body, function(err, data) {
+        tasks.createTask(req.body, req.file, function(err, data) {
             if (err) {
                 message = 'Creation failed: ' + err.code;
             } else {
@@ -62,6 +62,23 @@ exports.create = function(req, res, next) {
         res.redirect('/createTask');
     }
 };
+
+exports.byId = function (req, res, next, id) {
+    var tasks = require('../models/tasks.model');
+    tasks.taskById(id, function (err, task) {
+      if(err){
+        req.flash('error', 'Error retrieving the task.');
+        next();
+      } else {
+        if (task.length < 1){
+          req.flash('error', 'Task does not exist');
+          return next();
+        }
+        req.task = task[0];
+        return next();
+      }
+    });
+}
 
 exports.allByUser = function(req, res, next, id) {
     var tasks = require('../models/tasks.model');
@@ -167,10 +184,9 @@ exports.completeTask = function(req, res, next) {
     });
 }
 
-exports.updateAssigneeTasks = function(req, res, next, id) {
+exports.updateAssigneeTasks = function(req, res, next) {
     var tasks = require('../models/tasks.model');
-    var formName = 'update' + id;
-    tasks.updateAssigneeTask(req.body, function(err, results) {
+    tasks.updateAssigneeTask(req.body, req.file, function(err, results) {
         if (err) {
             req.flash('error', err.toString());
         } else {
@@ -194,12 +210,14 @@ exports.showAssigneeTasks = function(req, res, next) {
             myTasks = new Array(results.length);
             var statuses = new Array(results.length);
             for (var i = 0; i < results.length; i++) {
-                myTasks[i] = new Array(5);
+                myTasks[i] = new Array(7);
                 myTasks[i][0] = results[i].taskId;
                 myTasks[i][1] = results[i].taskName;
                 myTasks[i][2] = results[i].taskDescription;
                 myTasks[i][3] = results[i].userName;
-                myTasks[i][4] = results[i].taskStatus;
+                myTasks[i][4] = results[i].helpFile;
+                myTasks[i][5] = results[i].taskStatus;
+                myTasks[i][6] = JSON.parse(results[i].proofFile);
                 statuses[i] = ['Pending', 'Accepted', 'Completed', 'In progress'];
             }
         }
@@ -218,8 +236,9 @@ exports.renderAssigneeTasks = function(req, res, next) {
 }
 
 exports.render = function(req, res, next) {
-    var assigner = '<option value="' + req.user.userId + '" selected>' + req.user.userName + '</option>'; // current user
-    var assigneeList = '';
+    //var assigner = '<option value="' + req.user.userId + '" selected>' + req.user.userName + '</option>'; // current user
+    var assigner = req.user;
+    var assigneeList;
 
     var db = require('../models/db.model')();
 
@@ -232,9 +251,12 @@ exports.render = function(req, res, next) {
             console.log(err.toString());
             next(err);
         } else if (results.length > 0) {
-            results.forEach(function(result) {
-                assigneeList = assigneeList + '<option value="' + result.userId + '">' + result.userName + '</option>';
-            });
+            assigneeList = new Array(results.length);
+            for (var i=0;i<results.length;i++) {
+                assigneeList[i] = new Array(2);
+                assigneeList[i][0] = results[i].userId;
+                assigneeList[i][1] = results[i].userName;
+            }
         }
 
         res.render('createTask', {
