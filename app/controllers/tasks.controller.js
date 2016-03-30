@@ -216,6 +216,7 @@ exports.showAssigneeTasks = function(req, res, next) {
                 myTasks[i][2] = results[i].taskDescription;
                 myTasks[i][3] = results[i].userName;
                 myTasks[i][4] = results[i].taskStatus;
+                myTasks[i][5] = JSON.parse(results[i].proofFile);
                 statuses[i] = ['Pending', 'Accepted', 'Completed', 'In progress'];
             }
         }
