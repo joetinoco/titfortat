@@ -52,9 +52,18 @@ module.exports = function(app) {
     app.get('/newInvite', invitation.renderNewInvite);
     app.post('/newInvite', invitation.newInvite);   //replace with invitation exports.xyz name (xyz part)
 
-    //Jiho
+    //ManageTask
    app.get('/manageTask', task.getNames);
    app.post('/manageTask', task.completeTask);
+   
+   //User Information
+   app.get('/userInformation', function(req, res) {
+    res.render('/userInformation');
+});
+   
+   
+
+ 
 
 
 

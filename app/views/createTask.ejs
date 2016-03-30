@@ -11,7 +11,7 @@
                     <% if (typeof errorMsg !== 'undefined') { %>
                         <h4 id="errorMsg" class="text-danger"><%= errorMsg %></h4>
                     <% } %>
-                    <h3>You have <strong><%= user.userCredits %></strong> credits.</h3>
+                    <h3>You have <strong><%= user.userCredits %></strong> credits.</h3>                    
                     <form id="frmCreateTask" action="/tasks" method="post">
                         <div class="form-group">
                             <label for="name">Task Name</label>
