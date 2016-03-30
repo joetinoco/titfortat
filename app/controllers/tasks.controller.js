@@ -210,12 +210,13 @@ exports.showAssigneeTasks = function(req, res, next) {
             myTasks = new Array(results.length);
             var statuses = new Array(results.length);
             for (var i = 0; i < results.length; i++) {
-                myTasks[i] = new Array(5);
+                myTasks[i] = new Array(6);
                 myTasks[i][0] = results[i].taskId;
                 myTasks[i][1] = results[i].taskName;
                 myTasks[i][2] = results[i].taskDescription;
                 myTasks[i][3] = results[i].userName;
-                myTasks[i][4] = results[i].taskStatus;
+                myTasks[i][4] = results[i].helpFile;
+                myTasks[i][5] = results[i].taskStatus;
                 statuses[i] = ['Pending', 'Accepted', 'Completed', 'In progress'];
             }
         }

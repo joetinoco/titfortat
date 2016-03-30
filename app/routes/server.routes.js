@@ -64,6 +64,7 @@ module.exports = function(app) {
 
    // File download Routes
    app.get('/task/:taskId/proof', files.getProofFile);
+   app.get('/task/:taskId/help', files.getHelpFile);
    app.param('taskId', task.byId)
 
 }
