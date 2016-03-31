@@ -268,3 +268,13 @@ exports.render = function(req, res, next) {
         });
     });
 }
+
+
+//userInformation - Profile
+exports.userInformation = function(req, res, next) {
+        res.render('userInformation', {
+            pageTitle: 'Profile',
+            user: req.user,
+            errorMsg: req.flash('error')              
+  });
+};

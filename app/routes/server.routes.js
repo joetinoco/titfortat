@@ -58,22 +58,17 @@ module.exports = function(app) {
     app.get('/invitation/:inviteId', invitation.acceptInvite, invitation.renderAcceptanceFeedback);
     app.param('inviteId', invitation.getInvite);
 
-    //ManageTask
+    //Manage Task
    app.get('/manageTask', task.getNames);
    app.post('/manageTask', task.completeTask);
    
-   //User Information
-   app.get('/userInformation', function(req, res) {
-    res.render('/userInformation');
-});
-   
-   
-
- 
-
    // File download Routes
    app.get('/task/:taskId/proof', files.getProofFile);
    app.get('/task/:taskId/help', files.getHelpFile);
    app.param('taskId', task.byId)
+   
+
+   //Profile
+   app.get('/userInformation', task.userInformation);
 
 }

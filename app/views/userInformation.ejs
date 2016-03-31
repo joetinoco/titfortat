@@ -1,6 +1,29 @@
-<!DOCTYPE>
-<html>
-<body>
-<h1>asdasd</h1>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+    <% include components/htmlhead %>
+    <body>
+        <% include components/navbar %>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-sm-12 col-md-6">
+                    <h1><%=pageTitle %></h1>
+                    <% if (typeof errorMsg !== 'undefined') { %>
+                        <h2 id="errorMsg" class="text-danger"><%= errorMsg %></h2>
+                    <% } %>
+   
+                    <form id="frmProfile">
+                        <div class="form-profile">
+                            <label for="userName">Name</label>: <%= user.userName %></br>
+                            <label for="userCredits">Credits</label>: <%= user.userCredits %></br>
+                            <label for="userPhone">Phone Number</label>: <%= user.userPhone %></br>
+                            <label for="userEmail">Email</label>: <%= user.userEmail %></br>                         
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div> <!-- container -->
+        <% include components/scripts %>
+    </body>
 </html>
