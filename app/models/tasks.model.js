@@ -3,10 +3,19 @@
   ==================
 */
 
-exports.list = function(callback) {
+exports.list = function(groupId, callback) {
     var db = require('../models/db.model')();
+    var query = 'select tasks.taskName, tasks.taskDescription, tasks.taskmasterId, ' +
+      'u1.userName as assigner, tasks.assigneeId, u2.userName as assignee, tasks.taskStatus ' +
+      'from tasks ' +
+      'join users u1 on u1.userId = tasks.taskmasterId ' +
+      'join users u2 on u2.userId = tasks.assigneeId ';
+
+      if (groupId){
+        query += 'join tasksGroups tg on tasks.taskId = tg.taskId where tg.groupId = ' + groupId;
+      }
     db.query({
-        sql: 'select tasks.taskName, tasks.taskDescription, tasks.taskmasterId, u1.userName as assigner, tasks.assigneeId, u2.userName as assignee, tasks.taskStatus from tasks join users u1 on u1.userId = tasks.taskmasterId join users u2 on u2.userId = tasks.assigneeId;',
+        sql: query
     }, function(err, results, fields) {
         db.end();
         if (err) {
@@ -204,6 +213,3 @@ exports.awardCredits = function(task, callback) {
         });
     });
 }
-
-
-

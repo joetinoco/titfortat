@@ -3,8 +3,6 @@
  ===================
  */
 
-var db = require('../models/db.model')();
-
 exports.listAll = function(callback) {
     var db = require('../models/db.model')();
 
@@ -44,6 +42,46 @@ exports.createGroup = function(group, user, callback){
     });//end query
 }
 
+exports.groupsOwnedById = function(userId, callback){
+  var db = require('../models/db.model')();
+  db.query({
+      sql: 'select * from groups where groupAdminId = ?',
+      values: [userId]
+  }, function(err, results, fields) {
+      db.end();
+      if (err) {
+          callback(err);
+          return;
+      }
+      if (results.length == 0) {
+          callback({ code: 'User does not own any groups' });
+          return;
+      }
+      callback(false, results);
+  });
+}
+
+exports.groupsById = function(userId, callback){
+  var db = require('../models/db.model')();
+  db.query({
+      sql: 'SELECT * FROM groups AS g ' +
+          'INNER JOIN userGroups AS ug ON (g.groupId = ug.groupId) ' +
+          'WHERE ug.userId = ?',
+      values: [userId]
+  }, function(err, results, fields) {
+      db.end();
+      if (err) {
+          callback(err);
+          return;
+      }
+      if (results.length == 0) {
+          callback({ code: 'User does not participate in any groups' });
+          return;
+      }
+      callback(false, results);
+  });
+}
+
 exports.addUserToGroup = function(userId, groupId, callback){
     var db = require('../models/db.model')(); //db connection
 
@@ -57,5 +95,20 @@ exports.addUserToGroup = function(userId, groupId, callback){
             return;
         }
         callback(false, results);
+    });
+}
+
+exports.groupName = function(groupId, callback){
+    var db = require('../models/db.model')(); //db connection
+    db.query({
+        sql: 'select groupName from groups where groupId = ?',
+        values:[groupId]
+    }, function (err, results, fields) {
+        db.end();
+        if (err){
+            callback(err);
+            return;
+        }
+        callback(false, results[0]);
     });
 }

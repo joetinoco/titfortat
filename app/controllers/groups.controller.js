@@ -37,21 +37,39 @@ exports.renderGroupCreator = function(req, res, next){
     });
 }//render
 
-exports.groupsOwnedById = function(userId, callback){
-  var db = require('../models/db.model')();
-  db.query({
-      sql: 'select * from groups where groupAdminId = ?',
-      values: [userId]
-  }, function(err, results, fields) {
-      db.end();
-      if (err) {
-          callback(err);
-          return;
+exports.loadUserOwnedGroups = function(req, res, next){
+  if(!req.groups){
+    req.groups = {};
+  }
+  if(req.user){
+    // Load groups that the user is an admin of
+    var groups = require('../models/groups.model');
+    groups.groupsOwnedById(req.user.userId, function(err, results){
+      if (!err){
+        req.groups.owned = results;
       }
-      if (results.length == 0) {
-          callback({ code: 'User does not own any groups' });
-          return;
+      next();
+    });
+  } else next();
+}
+
+exports.loadUserGroups = function(req, res, next){
+  if(!req.groups){
+    req.groups = {};
+  }
+  if(req.user){
+    // Load groups that the user belongs to
+    var groups = require('../models/groups.model');
+    groups.groupsById(req.user.userId, function(err, results){
+      if (!err){
+        req.groups.member = results;
       }
-      callback(false, results);
-  });
+      return next();
+    });
+  } else return next();
+}
+
+exports.selectGroup = function(req, res, next, groupId){
+    req.currentGroup = groupId;
+    next();
 }

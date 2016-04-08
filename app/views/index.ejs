@@ -18,6 +18,26 @@ Index page
             <a href="/signin">Sign in</a> or <a href="/signup">Sign up</a> to use the site.
           <% } else { %>
             <h1>Welcome back, <%= user.userName %></h1>
+            <% if (groups) { %>
+              <% if (groups.member) { %>
+                <p>Select one of your groups:</p>
+                <% for(var i=0; i < groups.member.length; i++) { %>
+                  <p>
+                    <a class="btn btn-default" href="/group/<%= groups.member[i].groupId %>" role="button"><%= groups.member[i].groupName %></a>
+                  </p>
+                <% } %>
+              <% } %>
+              <% if (groups.owned) { %>
+                <p>Manage a group:</p>
+                <% for(var i=0; i < groups.owned.length; i++) { %>
+                  <p>
+                    <a class="btn btn-primary" href="/group/<%= groups.owned[i].groupId %>" role="button"><%= groups.owned[i].groupName %></a>
+                  </p>
+                  <% } %>
+                  <% } %>
+            <% } else { %>
+              Group commands go here.
+            <% } %>
           <% } %>
         </div>
         <div class="col-md-3"></div>

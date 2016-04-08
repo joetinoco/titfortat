@@ -6,7 +6,11 @@
     <body>
         <% include components/navbar %>
         <div class="container">
-            <h1>Task List</h1>
+            <h1>Task List
+              <% if (groupName) { %>
+                for the group <%= groupName %>
+              <% } %>
+            </h1>
             <% if (!taskList) { %>
                 <p>No tasks yet. Why not <a href="/createTask">create</a> one?</p>
             <% } else { %>

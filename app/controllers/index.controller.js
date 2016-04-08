@@ -8,5 +8,5 @@
 
 // Just a placeholder for the index page
 exports.render = function(req, res){
-  res.render('index', { pageTitle: '', user: req.user } );
+  res.render('index', { pageTitle: '', user: req.user, groups: req.groups } );
 };

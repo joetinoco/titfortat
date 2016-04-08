@@ -5,7 +5,7 @@ var invitations = require('../models/invitations.model'),
 
 exports.renderNewInvite = function(req, res, next){
   // Retrieve the list of groups the user owns
-  var groups = require('../controllers/groups.controller');
+  var groups = require('../models/groups.model');
 
   groups.groupsOwnedById(req.user.userId, function(err, results){
     if (err){

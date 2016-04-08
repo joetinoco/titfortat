@@ -9,7 +9,9 @@
 exports.read = function(req, res) {
     var taskList;
     var tasks = require('../models/tasks.model');
-    tasks.list(function(err, data) {
+    var groups = require('../models/groups.model');
+    var groupId = req.currentGroup || null;
+    tasks.list(groupId, function(err, data) {
         if (err) {
             console.log(err.toString());
             res.redirect('/');
@@ -25,15 +27,28 @@ exports.read = function(req, res) {
                 taskList[i][5] = data[i].assigneeId;
                 taskList[i][6] = data[i].assignee;
             }
-            res.render('viewTasks', {
+            if (groupId){
+              groups.groupName(groupId, function(err, results){
+                res.render('viewTasks', {
+                  pageTitle: 'View Tasks',
+                  taskList: taskList,
+                  user: req.user,
+                  groupName: results.groupName || '(all)'
+                });
+              });
+            } else {
+              res.render('viewTasks', {
                 pageTitle: 'View Tasks',
                 taskList: taskList,
-                user: req.user
-            });
+                user: req.user,
+                groupName : null
+              });
+            }
         } else {
             res.render('viewTasks', {
                 pageTitle: 'View Tasks',
-                user: req.user
+                user: req.user,
+                groupName : null
             });
         }
     });
@@ -275,6 +290,6 @@ exports.userInformation = function(req, res, next) {
         res.render('userInformation', {
             pageTitle: 'Profile',
             user: req.user,
-            errorMsg: req.flash('error')              
+            errorMsg: req.flash('error')
   });
 };
