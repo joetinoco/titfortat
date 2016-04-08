@@ -42,6 +42,7 @@ exports.createGroup = function(group, user, callback){
     });//end query
 }
 
+// Returns all groups owned by the user
 exports.groupsOwnedById = function(userId, callback){
   var db = require('../models/db.model')();
   db.query({
@@ -61,6 +62,7 @@ exports.groupsOwnedById = function(userId, callback){
   });
 }
 
+// Returns all groups where a user is a member
 exports.groupsById = function(userId, callback){
   var db = require('../models/db.model')();
   db.query({
@@ -79,6 +81,22 @@ exports.groupsById = function(userId, callback){
           return;
       }
       callback(false, results);
+  });
+}
+
+// Get a list of users in a group
+exports.groupUsers = function(groupId, callback){
+  var db = require('../models/db.model')();
+  db.query({
+    sql: 'SELECT u.* FROM users AS u INNER JOIN userGroups AS ug ON (ug.userId = u.userId) WHERE groupId = ?',
+    values: [groupId]
+  }, function (err, results, fields) {
+    db.end();
+    if (err){
+      callback(err);
+      return;
+    }
+    callback(false, results);
   });
 }
 

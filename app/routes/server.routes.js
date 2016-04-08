@@ -37,26 +37,24 @@ module.exports = function(app) {
     // Home page (group list)
     app.get('/', groups.loadUserOwnedGroups, groups.loadUserGroups, index.render);
 
+    // Group creation
+    app.get('/createGroup', groups.renderGroupCreator);
+    app.post('/createGroup', groups.create);
+
     // Group view
-    app.get('/group/:groupId', task.read);
     app.param('groupId', groups.selectGroup);
+    app.get('/group/:groupId', task.read);
 
     // Tasks
-    app.get('/createTask', task.render);
-    app.route('/tasks')
-        .get(task.read);
-    app.post('/tasks', upload.single('helpFile'), task.create);
-    app.route('/task/:user')
-        .get(task.showAll);
     app.param('user', task.allByUser);
-    app.route('/executeTasks')
-        .get(task.showAssigneeTasks);
+    app.get('/group/:groupId/createTask', task.render);
+    app.post('/group/:groupId/tasks', upload.single('helpFile'), task.create);
+    app.get('/task/:user', task.showAll);
+
+    // Task status update
+    app.get('/executeTasks', task.showAssigneeTasks);
     app.post('/tasks/update', upload.single('proofFile'), task.updateAssigneeTasks, task.renderAssigneeTasks);
 
-    // Groups
-    app.get('/createGroup', groups.renderGroupCreator);
-    app.route('/createGroup')
-            .post(groups.create);
 
     // Invitations
     app.get('/newInvite', invitation.renderNewInvite);
@@ -69,9 +67,9 @@ module.exports = function(app) {
    app.post('/manageTask', task.completeTask);
 
    // File download Routes
+   app.param('taskId', task.byId)
    app.get('/task/:taskId/proof', files.getProofFile);
    app.get('/task/:taskId/help', files.getHelpFile);
-   app.param('taskId', task.byId)
 
    //Profile
    app.get('/userInformation', task.userInformation);

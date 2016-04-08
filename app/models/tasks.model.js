@@ -63,13 +63,25 @@ exports.createTask = function(task, file, callback) {
         '(taskName, taskDescription, taskCredits, taskStatus, taskmasterId, assigneeId, helpFile) ' +
         'VALUES (?,?,?,?,?,?,?);',
         values: [task.name, task.description, task.credits, task.status, task.assigner, task.assignee, serializedFile]
-    }, function(err, results, fields) {
-        db.end();
+    }, function(err, result) {
         if (err) {
             callback(err);
             return;
+        } else {
+          // Add task to the group
+          db.query({
+              sql: 'INSERT INTO tasksGroups (taskId, groupId) ' +
+              'VALUES (?,?);',
+              values: [result.insertId, task.groupId]
+          }, function(err, results, fields) {
+              db.end();
+              if (err) {
+                  callback(err);
+                  return;
+              }
+              callback(false, results);
+          });
         }
-        callback(false, results);
     });
 }
 

@@ -28,10 +28,10 @@ Index page
                 <% } %>
               <% } %>
               <% if (groups.owned) { %>
-                <p>Manage a group:</p>
+                <p>Manage one of your groups:</p>
                 <% for(var i=0; i < groups.owned.length; i++) { %>
                   <p>
-                    <a class="btn btn-primary" href="/group/<%= groups.owned[i].groupId %>" role="button"><%= groups.owned[i].groupName %></a>
+                    <a class="btn btn-default" href="/group/<%= groups.owned[i].groupId %>" role="button"><%= groups.owned[i].groupName %></a>
                   </p>
                   <% } %>
                   <% } %>

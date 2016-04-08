@@ -33,7 +33,8 @@ exports.read = function(req, res) {
                   pageTitle: 'View Tasks',
                   taskList: taskList,
                   user: req.user,
-                  groupName: results.groupName || '(all)'
+                  groupName: results.groupName || '(all)',
+                  groupId: req.currentGroup
                 });
               });
             } else {
@@ -66,7 +67,7 @@ exports.create = function(req, res, next) {
                     if (!err) {
                         message = 'Task created!';
                         req.flash('error', message);
-                        res.redirect('/createTask');
+                        res.redirect('/group/' + req.currentGroup + '/createTask');
                     }
                 });
             }
@@ -74,7 +75,7 @@ exports.create = function(req, res, next) {
     } else {
         message = 'Need at least one credit!';
         req.flash('error', message);
-        res.redirect('/createTask');
+        res.redirect('/group/' + req.currentGroup + '/createTask');
     }
 };
 
@@ -255,13 +256,13 @@ exports.render = function(req, res, next) {
     var assigner = req.user;
     var assigneeList;
 
-    var db = require('../models/db.model')();
+    var groups = require('../models/groups.model');
 
-    // get list of assignees
-    db.query({
-        sql: 'select * from users where userId <> ?;',
-        values: req.user.userId
-    }, function(err, results, fields) {
+    // get list of potential assignees
+    // (all users in the same group, minus the current user)
+    console.log('Cur group: ' + req.currentGroup);
+    groups.groupUsers(req.currentGroup, function(err, results) {
+      console.log(results);
         if (err) {
             console.log(err.toString());
             next(err);
@@ -273,13 +274,13 @@ exports.render = function(req, res, next) {
                 assigneeList[i][1] = results[i].userName;
             }
         }
-
         res.render('createTask', {
             pageTitle: 'Task Creator',
             user: req.user,
             errorMsg: req.flash('error'),
             assigner: assigner,
-            assigneeList: assigneeList
+            assigneeList: assigneeList,
+            groupId: req.currentGroup
         });
     });
 }
