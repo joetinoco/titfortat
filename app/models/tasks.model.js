@@ -22,10 +22,6 @@ exports.list = function(groupId, callback) {
             callback(err);
             return;
         }
-        if (results.length == 0) {
-            callback({ code: 'Tasks not found' });
-            return;
-        }
         callback(false, results);
     });
 }

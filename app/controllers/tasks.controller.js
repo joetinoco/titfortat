@@ -1,8 +1,8 @@
 /*
-  "tasks" controller
-  ==================
+"tasks" controller
+==================
 
-  Handles task creation [and listing].
+Handles task creation [and listing].
 
 */
 
@@ -13,9 +13,11 @@ exports.read = function(req, res) {
     var groupId = req.currentGroup || null;
     tasks.list(groupId, function(err, data) {
         if (err) {
-            console.log(err.toString());
+            console.log(err);
             res.redirect('/');
-        } else if (data.length > 0) {
+        } else if (data.length == 0){
+            taskList = [];
+        } else {
             taskList = new Array(data.length);
             for (var i = 0; i < taskList.length; i++) {
                 taskList[i] = new Array(7);
@@ -27,27 +29,22 @@ exports.read = function(req, res) {
                 taskList[i][5] = data[i].assigneeId;
                 taskList[i][6] = data[i].assignee;
             }
-            if (groupId){
-              groups.groupName(groupId, function(err, results){
+        }
+        if (groupId){
+            groups.groupName(groupId, function(err, results){
                 res.render('viewTasks', {
-                  pageTitle: 'View Tasks',
-                  taskList: taskList,
-                  user: req.user,
-                  groupName: results.groupName || '(all)',
-                  groupId: req.currentGroup
+                    pageTitle: 'View Tasks',
+                    taskList: taskList,
+                    user: req.user,
+                    groupName: results.groupName || '(all)',
+                    groupId: req.currentGroup,
+                    ownsCurrentGroup: req.ownsCurrentGroup,
                 });
-              });
-            } else {
-              res.render('viewTasks', {
-                pageTitle: 'View Tasks',
-                taskList: taskList,
-                user: req.user,
-                groupName : null
-              });
-            }
+            });
         } else {
             res.render('viewTasks', {
                 pageTitle: 'View Tasks',
+                taskList: taskList,
                 user: req.user,
                 groupName : null
             });
@@ -82,17 +79,17 @@ exports.create = function(req, res, next) {
 exports.byId = function (req, res, next, id) {
     var tasks = require('../models/tasks.model');
     tasks.taskById(id, function (err, task) {
-      if(err){
-        req.flash('error', 'Error retrieving the task.');
-        next();
-      } else {
-        if (task.length < 1){
-          req.flash('error', 'Task does not exist');
-          return next();
+        if(err){
+            req.flash('error', 'Error retrieving the task.');
+            next();
+        } else {
+            if (task.length < 1){
+                req.flash('error', 'Task does not exist');
+                return next();
+            }
+            req.task = task[0];
+            return next();
         }
-        req.task = task[0];
-        return next();
-      }
     });
 }
 
@@ -108,10 +105,10 @@ exports.allByUser = function(req, res, next, id) {
 
         tasks.getTasksByAssigner(id, function(err, results) {
             if (err) {
-                if (err.code === 'Tasks not found') {
-                    assignerTasks = [];
-                } else next(err);
-            } else if (results.length > 0) {
+                next(err);
+            } else if (results.length == 0){
+                assignerTasks = [];
+            } else {
                 assignerTasks = new Array(results.length);
                 for (var i = 0; i < results.length; i++) {
                     assignerTasks[i] = new Array(4);
@@ -124,10 +121,10 @@ exports.allByUser = function(req, res, next, id) {
 
             tasks.getTasksByAssignee(id, function(err, results) {
                 if (err) {
-                    if (err.code === 'Tasks not found') {
-                        assigneeTasks = [];
-                    } else next(err);
-                } else if (results.length > 0) {
+                    next(err);
+                } else if (results.length == 0){
+                    assigneeTasks = [];
+                } else {
                     assigneeTasks = new Array(results.length);
                     for (var i = 0; i < results.length; i++) {
                         assigneeTasks[i] = new Array(4);
@@ -262,7 +259,7 @@ exports.render = function(req, res, next) {
     // (all users in the same group, minus the current user)
     console.log('Cur group: ' + req.currentGroup);
     groups.groupUsers(req.currentGroup, function(err, results) {
-      console.log(results);
+        console.log(results);
         if (err) {
             console.log(err.toString());
             next(err);
@@ -288,9 +285,9 @@ exports.render = function(req, res, next) {
 
 //userInformation - Profile
 exports.userInformation = function(req, res, next) {
-        res.render('userInformation', {
-            pageTitle: 'Profile',
-            user: req.user,
-            errorMsg: req.flash('error')
-  });
+    res.render('userInformation', {
+        pageTitle: 'Profile',
+        user: req.user,
+        errorMsg: req.flash('error')
+    });
 };

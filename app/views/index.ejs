@@ -19,7 +19,7 @@ Index page
           <% } else { %>
             <h1>Welcome back, <%= user.userName %></h1>
             <% if (groups) { %>
-              <% if (groups.member) { %>
+              <% if (groups.member && (groups.member.length > 0)) { %>
                 <p>Select one of your groups:</p>
                 <% for(var i=0; i < groups.member.length; i++) { %>
                   <p>
@@ -27,7 +27,7 @@ Index page
                   </p>
                 <% } %>
               <% } %>
-              <% if (groups.owned) { %>
+              <% if (groups.owned && (groups.owned.length > 0) ) { %>
                 <p>Manage one of your groups:</p>
                 <% for(var i=0; i < groups.owned.length; i++) { %>
                   <p>
@@ -35,9 +35,8 @@ Index page
                   </p>
                   <% } %>
                   <% } %>
-            <% } else { %>
-              Group commands go here.
             <% } %>
+            <a class="btn btn-primary" href="/createGroup" role="button">Create a new group</a>
           <% } %>
         </div>
         <div class="col-md-3"></div>

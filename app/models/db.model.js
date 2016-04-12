@@ -9,16 +9,27 @@
 
 module.exports = function(){
   var mysql      = require('mysql');
-  var connection = mysql.createConnection({
-    host: 'mysql.josetinoco.com',
-    user: 'titfortat',
-    password: '123qweasdzxc',
-    database: 'titfortat'
-  });
+  var connection = {};
+  var configs = [
+    {
+      host: 'mysql.josetinoco.com',
+      user: 'titfortat',
+      password: '123qweasdzxc',
+      database: 'titfortat'
+    },
+    {
+      host: 'localhost', // SSH tunnel to circumvent Centennial's firewall
+      port: 3307,
+      user: 'titfortat',
+      password: '123qweasdzxc',
+      database: 'titfortat'
+    }
+  ];
 
+  connection = mysql.createConnection(configs[0]);
   connection.connect(function(err) {
     if (err) {
-      console.error('DB: error connecting - ' + err.stack);
+      console.error('DB: error connecting to server ' + err.stack);
       throw err;
     } else {
       console.log('> DB connection opened, thread ID: ' + connection.threadId);

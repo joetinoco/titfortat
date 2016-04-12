@@ -6,13 +6,21 @@
     <body>
         <% include components/navbar %>
         <div class="container">
+            <% if (ownsCurrentGroup) { %>
+                <div class="row">
+                    <div class="col-m-12">
+                        <h3>Group management</h3>
+                        <a class="btn btn-primary" href="/newInvite" role="button">Invite users</a>
+                    </div>
+                </div>
+            <% } %>
             <h1>Task List
               <% if (groupName) { %>
                 for the group <%= groupName %>
               <% } %>
             </h1>
-            <% if (!taskList) { %>
-                <p>No tasks yet. Why not <a href="/createTask">create</a> one?</p>
+            <% if (!taskList || taskList.length == 0) { %>
+                <p>No tasks yet. Why not <a href="/group/<%= groupId %>/createTask">create</a> one?</p>
             <% } else { %>
                 <table class="table table-striped">
                     <thead>
