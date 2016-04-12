@@ -107,8 +107,20 @@ exports.getTasksByAssigner = function(assignerId, callback) {
             callback(err);
             return;
         }
-        if (results.length == 0) {
-            callback({ code: 'Tasks not found' });
+        callback(false, results);
+    });
+}
+
+exports.getTaskCountsByAssigner = function(assignerId, callback) {
+    var db = require('../models/db.model')();
+    db.query({
+        sql: 'SELECT taskStatus, count(*) AS numTasks FROM tasks ' +
+            'WHERE taskmasterId = ? ' +
+            'GROUP BY taskStatus ',
+        values: [assignerId]
+    }, function(err, results, fields) {
+        if (err) {
+            callback(err);
             return;
         }
         callback(false, results);
@@ -130,13 +142,24 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
             callback(err);
             return;
         }
-        if (results.length == 0) {
-            callback({ code: 'Tasks not found' });
+        callback(false, results);
+    });
+}
+
+exports.getTaskCountsByAssignee = function(assigneeId, callback) {
+    var db = require('../models/db.model')();
+    db.query({
+        sql: 'SELECT taskStatus, count(*) AS numTasks FROM tasks ' +
+            'WHERE assigneeId = ? ' +
+            'GROUP BY taskStatus ',
+        values: [assigneeId]
+    }, function(err, results, fields) {
+        if (err) {
+            callback(err);
             return;
         }
         callback(false, results);
     });
-
 }
 
 exports.updateAssigneeTask = function(task, file, callback) {

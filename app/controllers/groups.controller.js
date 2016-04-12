@@ -64,9 +64,9 @@ exports.loadUserGroups = function(req, res, next){
             if (!err){
                 req.groups.member = results;
             }
-            return next();
+            next();
         });
-    } else return next();
+    } else next();
 }
 
 exports.selectGroup = function(req, res, next, groupId){

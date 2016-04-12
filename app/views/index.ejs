@@ -10,37 +10,91 @@ Index page
   <body>
     <% include components/navbar %>
     <div class="container">
-      <div class="row starting-msg">
-        <div class="col-md-3"></div>
-        <div class="col-sm-12 col-md-6">
+
           <% if (!user) { %>
-            <h1>Welcome!</h1>
-            <a href="/signin">Sign in</a> or <a href="/signup">Sign up</a> to use the site.
+              <div class="row starting-msg">
+                <div class="col-md-3"></div>
+                <div class="col-sm-12 col-md-6">
+                    <h1>Welcome!</h1>
+                    <a href="/signin">Sign in</a> or <a href="/signup">Sign up</a> to use the site.
+                </div>
+                <div class="col-md-3"></div>
+              </div>
           <% } else { %>
-            <h1>Welcome back, <%= user.userName %></h1>
-            <% if (groups) { %>
-              <% if (groups.member && (groups.member.length > 0)) { %>
-                <p>Select one of your groups:</p>
-                <% for(var i=0; i < groups.member.length; i++) { %>
-                  <p>
-                    <a class="btn btn-default" href="/group/<%= groups.member[i].groupId %>" role="button"><%= groups.member[i].groupName %></a>
-                  </p>
-                <% } %>
-              <% } %>
-              <% if (groups.owned && (groups.owned.length > 0) ) { %>
-                <p>Manage one of your groups:</p>
-                <% for(var i=0; i < groups.owned.length; i++) { %>
-                  <p>
-                    <a class="btn btn-default" href="/group/<%= groups.owned[i].groupId %>" role="button"><%= groups.owned[i].groupName %></a>
-                  </p>
-                  <% } %>
-                  <% } %>
-            <% } %>
-            <a class="btn btn-primary" href="/createGroup" role="button">Create a new group</a>
+              <div class="row starting-msg">
+                <div class="col-sm-12">
+                    <h1>Welcome back, <%= user.userName %></h1>
+                    <p>You have <strong><%= userCredits %> credits</strong> to create new tasks.</p>
+                </div>
+              </div>
+
+              <div class="row">
+
+                <!-- User task info -->
+                <div class="col-sm-12 col-md-6">
+                    <h3>Your to-do list</h3>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksPending %></h1>
+                            <p>tasks pending</p>
+                            <a class="btn btn-info" href="/executeTasks" role="button">Update status</a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksWaitingApproval %></h1>
+                            completed, waiting approval
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksClosed %></h1>
+                            closed
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h3>Tasks you created</h3>
+                        <hr>
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksAssignedPending %></h1>
+                            <p>pending execution</p>
+                            <a class="btn btn-info" href="/tasks/<%= user.userId %>" role="button">View tasks</a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksAssignedWaitingApproval %></h1>
+                            <p>completed, waiting your approval</p>
+                            <a class="btn btn-info" href="/manageTask" role="button">Approve</a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h1><%= tasksAssignedClosed %></h1>
+                            closed
+                        </div>
+                    </div>
+                </div>
+
+                <!-- group buttons -->
+                <div class="col-sm-12 col-md-6">
+                    <% if (groups) { %>
+                      <h3>Your groups</h3>
+                      <hr>
+                      <% if (groups.member && (groups.member.length > 0)) { %>
+                        <% for(var i=0; i < groups.member.length; i++) { %>
+                          <p>
+                            <a class="btn btn-default" href="/group/<%= groups.member[i].groupId %>" role="button"><%= groups.member[i].groupName %></a>
+                          </p>
+                        <% } %>
+                      <% } %>
+                      <% if (groups.owned && (groups.owned.length > 0) ) { %>
+                        <p>Groups you created:</p>
+                        <% for(var i=0; i < groups.owned.length; i++) { %>
+                          <p>
+                            <a class="btn btn-default " href="/group/<%= groups.owned[i].groupId %>" role="button"><%= groups.owned[i].groupName %></a>
+                          </p>
+                          <% } %>
+                          <% } %>
+                    <% } %>
+                    <hr>
+                    <a class="btn btn-primary pull-right" href="/createGroup" role="button">Create a new group</a>
+                </div>
+            </div>
           <% } %>
-        </div>
-        <div class="col-md-3"></div>
-      </div>
     </div><!-- container -->
     <% include components/scripts %>
   </body>

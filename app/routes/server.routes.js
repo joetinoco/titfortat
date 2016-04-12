@@ -35,7 +35,7 @@ module.exports = function(app) {
     });
 
     // Home page (group list)
-    app.get('/', groups.loadUserOwnedGroups, groups.loadUserGroups, index.render);
+    app.get('/', groups.loadUserOwnedGroups, groups.loadUserGroups, user.loadUserCounts, index.render);
 
     // Group creation
     app.get('/createGroup', groups.renderGroupCreator);
@@ -49,7 +49,7 @@ module.exports = function(app) {
     app.param('user', task.allByUser);
     app.get('/group/:groupId/createTask', task.render);
     app.post('/group/:groupId/tasks', upload.single('helpFile'), task.create);
-    app.get('/task/:user', task.showAll);
+    app.get('/tasks/:user', task.showAll);
 
     // Task status update
     app.get('/executeTasks', task.showAssigneeTasks);
