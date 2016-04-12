@@ -100,7 +100,11 @@ exports.useCredits = function(user, callback) {
 exports.getTasksByAssigner = function(assignerId, callback) {
     var db = require('../models/db.model')();
     db.query({
-        sql: 'SELECT * FROM tasks join users as u on u.userId = tasks.assigneeId WHERE taskmasterId = ?;',
+        sql: 'SELECT t.*, g.*, u.userName FROM tasks AS t ' +
+            'JOIN users AS u ON u.userId = t.assigneeId ' +
+            'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
+            'JOIN groups AS g ON tg.groupId = g.groupId ' +
+            'WHERE t.taskmasterId = ?',
         values: [assignerId]
     }, function(err, results, fields) {
         if (err) {
@@ -135,7 +139,7 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
             'JOIN users AS u ON u.userId = t.taskmasterId ' +
             'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
             'JOIN groups AS g ON tg.groupId = g.groupId ' +
-            'WHERE assigneeId = ?',
+            'WHERE t.assigneeId = ?',
         values: [assigneeId]
     }, function(err, results, fields) {
         if (err) {

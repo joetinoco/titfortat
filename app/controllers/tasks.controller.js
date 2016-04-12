@@ -114,8 +114,10 @@ exports.allByUser = function(req, res, next, id) {
                     assignerTasks[i] = new Array(4);
                     assignerTasks[i][0] = results[i].taskName;
                     assignerTasks[i][1] = results[i].taskDescription;
-                    assignerTasks[i][2] = results[i].userName;
-                    assignerTasks[i][3] = results[i].taskStatus;
+                    assignerTasks[i][2] = results[i].groupId;
+                    assignerTasks[i][3] = results[i].groupName;
+                    assignerTasks[i][4] = results[i].userName;
+                    assignerTasks[i][5] = results[i].taskStatus;
                 }
             }
 
@@ -130,8 +132,10 @@ exports.allByUser = function(req, res, next, id) {
                         assigneeTasks[i] = new Array(4);
                         assigneeTasks[i][0] = results[i].taskName;
                         assigneeTasks[i][1] = results[i].taskDescription;
-                        assigneeTasks[i][2] = results[i].userName;
-                        assigneeTasks[i][3] = results[i].taskStatus;
+                        assigneeTasks[i][2] = results[i].groupId;
+                        assigneeTasks[i][3] = results[i].groupName;
+                        assigneeTasks[i][4] = results[i].userName;
+                        assigneeTasks[i][5] = results[i].taskStatus;
                     }
                 }
 
@@ -150,8 +154,32 @@ exports.showAll = function(req, res, next) {
         pageTitle: req.pageTitle,
         user: req.user,
         username: req.username,
+        showAssignedBy: true,
+        showAssignedTo: true,
         assignerTasks: req.assignerTasks,
         assigneeTasks: req.assigneeTasks
+    });
+};
+
+exports.showAssignedTo = function(req, res, next) {
+    res.render('viewUserTasks', {
+        pageTitle: req.pageTitle,
+        user: req.user,
+        username: req.username,
+        showAssignedBy: false,
+        showAssignedTo: true,
+        assigneeTasks: req.assigneeTasks
+    });
+};
+
+exports.showAssignedBy = function(req, res, next) {
+    res.render('viewUserTasks', {
+        pageTitle: req.pageTitle,
+        user: req.user,
+        username: req.username,
+        showAssignedBy: true,
+        showAssignedTo: false,
+        assignerTasks: req.assignerTasks
     });
 };
 

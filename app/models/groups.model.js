@@ -54,10 +54,6 @@ exports.groupsOwnedById = function(userId, callback){
           callback(err);
           return;
       }
-      if (results.length == 0) {
-          callback({ code: 'User does not own any groups' });
-          return;
-      }
       callback(false, results);
   });
 }
@@ -74,10 +70,6 @@ exports.groupsById = function(userId, callback){
       db.end();
       if (err) {
           callback(err);
-          return;
-      }
-      if (results.length == 0) {
-          callback({ code: 'User does not participate in any groups' });
           return;
       }
       callback(false, results);

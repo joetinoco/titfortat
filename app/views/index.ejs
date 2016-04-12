@@ -42,7 +42,8 @@ Index page
                         </div>
                         <div class="col-md-4 text-center">
                             <h1><%= tasksWaitingApproval %></h1>
-                            completed, waiting approval
+                            <p>completed, waiting approval</p>
+                            <a class="btn btn-info" href="/tasks/assignedto/<%= user.userId %>" role="button">View tasks</a>
                         </div>
                         <div class="col-md-4 text-center">
                             <h1><%= tasksClosed %></h1>
@@ -55,7 +56,7 @@ Index page
                         <div class="col-md-4 text-center">
                             <h1><%= tasksAssignedPending %></h1>
                             <p>pending execution</p>
-                            <a class="btn btn-info" href="/tasks/<%= user.userId %>" role="button">View tasks</a>
+                            <a class="btn btn-info" href="/tasks/assignedby/<%= user.userId %>" role="button">View tasks</a>
                         </div>
                         <div class="col-md-4 text-center">
                             <h1><%= tasksAssignedWaitingApproval %></h1>

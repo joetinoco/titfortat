@@ -49,7 +49,9 @@ module.exports = function(app) {
     app.param('user', task.allByUser);
     app.get('/group/:groupId/createTask', task.render);
     app.post('/group/:groupId/tasks', upload.single('helpFile'), task.create);
-    app.get('/tasks/:user', task.showAll);
+    app.get('/tasks/:user', task.showAll); // TODO: rethink this view.
+    app.get('/tasks/assignedto/:user', task.showAssignedTo);
+    app.get('/tasks/assignedby/:user', task.showAssignedBy);
 
     // Task status update
     app.get('/executeTasks', task.showAssigneeTasks);
