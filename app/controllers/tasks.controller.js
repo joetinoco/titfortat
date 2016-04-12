@@ -228,9 +228,11 @@ exports.showAssigneeTasks = function(req, res, next) {
                 myTasks[i][1] = results[i].taskName;
                 myTasks[i][2] = results[i].taskDescription;
                 myTasks[i][3] = results[i].userName;
-                myTasks[i][4] = results[i].helpFile;
-                myTasks[i][5] = results[i].taskStatus;
-                myTasks[i][6] = JSON.parse(results[i].proofFile);
+                myTasks[i][4] = results[i].groupId;
+                myTasks[i][5] = results[i].groupName;
+                myTasks[i][6] = results[i].helpFile;
+                myTasks[i][7] = results[i].taskStatus;
+                myTasks[i][8] = JSON.parse(results[i].proofFile);
                 statuses[i] = ['Pending', 'Accepted', 'Completed', 'In progress'];
             }
         }

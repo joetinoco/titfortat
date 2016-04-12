@@ -16,6 +16,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Assigned By</th>
+                <th>Group</th>
                 <th>Supporting<br>Documents</th>
                 <th>Status</th>
                 <th>Proof of completion</th>
@@ -30,8 +31,9 @@
                     <td><%= tasks[i][1] %></td>
                     <td><%= tasks[i][2] %></td>
                     <td><%= tasks[i][3] %></td>
+                    <td><a href="/group/<%= tasks[i][4] %>"><%= tasks[i][5] %></a></td>
                     <td>
-                        <% if (tasks[i][4] == null) { %>
+                        <% if (tasks[i][6] == null) { %>
                         N/A
                         <% } else { %>
                         <a href=<%= "/task/" + tasks[i][0] + "/help" %>>Click to download</a>
@@ -40,7 +42,7 @@
                     <td>
                         <select name="status">
                             <% for (var j=0;j<statuses[i].length;j++) { %>
-                                <% if(statuses[i][j]==tasks[i][5]) { %>
+                                <% if(statuses[i][j]==tasks[i][7]) { %>
                                     <option selected><%= statuses[i][j] %></option>
                                 <% } else { %>
                                     <option><%= statuses[i][j] %></option>
@@ -49,8 +51,8 @@
                         </select>
                     </td>
                     <td>
-                        <% if(tasks[i][6]) { %>
-                            <a href="/task/<%= tasks[i][0] %>/proof"><%= tasks[i][6].originalname %></a>
+                        <% if(tasks[i][8]) { %>
+                            <a href="/task/<%= tasks[i][0] %>/proof"><%= tasks[i][8].originalname %></a>
                         <% } else { %>
                             None
                         <% } %>
@@ -59,7 +61,7 @@
                     <td><button type="submit" class="btn btn-default">Update</button></td>
                 </tr>
             </form>
-        <% }} %> <!-- for loop ends -->                
+        <% }} %> <!-- for loop ends -->
                     </tbody>
         </table>
         <% } else { %> <!-- if block ends -->

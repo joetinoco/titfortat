@@ -119,7 +119,11 @@ exports.getTasksByAssigner = function(assignerId, callback) {
 exports.getTasksByAssignee = function(assigneeId, callback) {
     var db = require('../models/db.model')();
     db.query({
-        sql: 'SELECT * FROM tasks join users as u on u.userId = tasks.taskmasterId WHERE assigneeId = ?;',
+        sql: 'SELECT t.*, g.*, u.userName FROM tasks AS t ' +
+            'JOIN users AS u ON u.userId = t.taskmasterId ' +
+            'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
+            'JOIN groups AS g ON tg.groupId = g.groupId ' +
+            'WHERE assigneeId = ?',
         values: [assigneeId]
     }, function(err, results, fields) {
         if (err) {
