@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-sm-12 col-md-6">
-                    <h1>Invite a user to a group</h1>
+                    <h1>Invite a user to the group <%= groupName %></h1>
                     <% if (typeof errorMsg !== 'undefined') { %>
                         <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
                     <% } %>
@@ -22,12 +22,7 @@
                           <div class="form-group">
                             <label for="inviteeEmail">Email</label>
                             <input type="email" name="inviteeEmail" class="form-control" required/>
-                            <label for="groupId">Invite to which group?</label>
-                            <select name="groupId" class="form-control">
-                                <% userGroupsOwned.forEach(function(group) { %>
-                                  <option value="<%- group.groupId %>"><%- group.groupName %></option>
-                                <% }); %>
-                            </select>
+                            <input type="hidden" name="groupId" value="<%= groupId %>">
                           </div>
                           <button type="submit" class="btn btn-default">Submit</button>
                       </form>

@@ -20,6 +20,8 @@ exports.renderNewInvite = function(req, res, next){
     res.render('newInvite', {
         pageTitle: 'Create New Invitation',
         user: req.user,
+        groupId: req.currentGroup,
+        groupName: req.currentGroupName,
         userGroupsOwned: results,
         errorMsg: req.flash('error'),
         successMsg: req.flash('success')
@@ -49,7 +51,7 @@ exports.newInvite = function(req, res, next)
           } else {
             req.flash('success', 'User invited successfully.');
           }
-          res.redirect('/newInvite'); //goes back to invite page : create another invite
+          res.redirect('/group/' + req.body.groupId + '/newInvite'); //goes back to invite page : create another invite
         });
     }
   });

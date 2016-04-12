@@ -83,7 +83,10 @@ exports.selectGroup = function(req, res, next, groupId){
                 console.log(err);
             } else {
                 results.forEach(function(g){
-                    if (g.groupId == groupId) ownsGroup = true;
+                    if (g.groupId == groupId){
+                        ownsGroup = true;
+                        req.currentGroupName = g.groupName;
+                    }
                 })
                 req.ownsCurrentGroup = ownsGroup;
                 next();
