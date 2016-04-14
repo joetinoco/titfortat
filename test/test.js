@@ -1,5 +1,6 @@
 // PREPARATIONS
 //=============
+var config = require('../config/config');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var req, res, next;
@@ -14,26 +15,69 @@ var mockUser = {
 var mockInvalidUser = {
     userId: -9999,
     username: 'I do not exist'
-}
+};
 
-var testGroup = 16;
+var mockGrouplessUser = {
+    userId: 485,
+    username: 'johann'
+};
 
+// Mock groups
+var mockCurrentGroup = 16;
+var mockInvalidGroup = -999;
+
+// Mock invites
+var mockInvitationEmail = 'mochatest@josetinoco.com';
+var mockInvalidInvite = -9999;
+var mockInvitationUser = {
+    userId: 489,
+    username: 'mochatest'
+};
+
+// DB helper functions
+var db = {
+    // Invites
+    getTestInvite: function(callback){
+        var conn = require('../app/models/db.model')();
+        conn.query({
+            sql: "SELECT * FROM invites WHERE inviteeEmail = '" + mockInvitationEmail + "'"
+        }, function(err, result){
+            callback(result[0]);
+        });
+    },
+    cleanupMockInvites: function(callback){
+        var conn = require('../app/models/db.model')();
+        conn.query({
+            sql: "DELETE FROM invites WHERE inviteeEmail = ?",
+            values: [mockInvitationEmail]
+        }, function(err, result){
+            conn.query({
+                sql: "DELETE FROM userGroups WHERE userId = ?",
+                values: [mockInvitationUser.userId]
+            }, function(err, result){
+                callback();
+            });
+        });
+    },
+};
 
 // Controllers
 var index = require('../app/controllers/index.controller'),
 users = require('../app/controllers/users.controller'),
 tasks = require('../app/controllers/tasks.controller.js'),
 files = require('../app/controllers/files.controller.js'),
-invitation = require('../app/controllers/invitations.controller.js'),
+invitations = require('../app/controllers/invitations.controller.js'),
 groups = require('../app/controllers/groups.controller.js');
 
 // Mock request/response objects with stub functions
 var beforeAllTests = function(){
     req = {
         flash: function(type, msg){
-            this.flashMsg = {};
-            this.flashMsg.type = type;
-            if (msg) this.flash.msg = msg;
+            if (msg) {
+                this.flashMsg = {};
+                this.flashMsg.type = type;
+                this.flash.msg = msg;
+            }
         },
     };
     res = {
@@ -43,12 +87,15 @@ var beforeAllTests = function(){
             this.asyncReturn();
         },
         redirect: function(path){
-            res.redirected = path;
+            this.redirected = path;
+            this.asyncReturn();
         },
         flash: function(type, msg){
-            this.flashMsg = {};
-            this.flashMsg.type = type;
-            if (msg) this.flashMsg.msg = msg;
+            if (msg) {
+                this.flashMsg = {};
+                this.flashMsg.type = type;
+                this.flash.msg = msg;
+            }
         },
         asyncReturn: null // This will host Mocha's async callback ("done()")
     };
@@ -186,4 +233,129 @@ describe('Controllers', function(){
         });
 
     }); // Tasks controller tests
+
+    /*
+    *
+    * Tests for the INVITATIONS controller
+    *
+    */
+
+    describe('Invitations controller', function(){
+
+        // invitations.renderNewInvite
+        // ===========================
+
+        describe('Render the \'new invite\' page', function(){
+            beforeEach(function(done){
+                req.currentGroup = mockCurrentGroup;
+                req.user = mockUser;
+                res.asyncReturn = done;
+                invitations.renderNewInvite(req, res);
+            });
+            it('Should render the new invite page', function(){
+                assert.equal(res.template, 'newInvite');
+            });
+            it('Should have the form linked to the selected group', function(){
+                assert.equal(res.data.groupId, mockCurrentGroup);
+            });
+        });
+
+        describe('Attempt an invitation without owning any groups', function(){
+            beforeEach(function(done){
+                req.currentGroup = null;
+                req.user = mockGrouplessUser;
+                res.asyncReturn = done;
+                invitations.renderNewInvite(req, res);
+            });
+            it('Should render the new invite page anyway', function(){
+                assert.equal(res.template, 'newInvite');
+            });
+            it('Should show a flash error message', function(){
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+
+        // invitations.newInvite
+        // =====================
+
+        describe('Create a new invite', function(){
+            beforeEach(function(done){
+                req.body = {};
+                req.body.groupId = mockCurrentGroup;
+                req.body.inviteeEmail = mockInvitationEmail;
+                req.user = mockUser;
+                res.asyncReturn = done;
+                invitations.newInvite(req, res, done);
+            });
+            it('Should redirect the user back and show a success flash message', function(){
+                assert.equal(res.redirected, '/group/' + mockCurrentGroup + '/newInvite');
+                assert.equal(req.flashMsg.type, 'success');
+            });
+        });
+
+        describe('Accept invites', function(){
+
+            // invitations.getInvite
+            // =====================
+
+            describe('Attempt to load an invalid invite', function(){
+                beforeEach(function(done){
+                    invitations.getInvite(req, res, done, mockInvalidInvite);
+                });
+                it('Should not load any invites', function(){
+                    assert.isNotOk(req.invite);
+                });
+                it('Should display an error flash message', function(){
+                    assert.equal(req.flashMsg.type, 'error');
+                });
+            });
+
+            describe('Retrieve a valid invite', function(){
+                beforeEach(function(done){
+                    db.getTestInvite(function(invite){
+                        invitations.getInvite(req, res, done, invite.inviteId);
+                    });
+                });
+                it('Should load the invite in the request', function(){
+                    assert.isOk(req.invite);
+                });
+                it('Should not have an error flash message', function(){
+                    assert.notProperty(req, 'flashMsg');
+                });
+            });
+
+            // invitations.acceptInvite
+            // ========================
+
+            describe('Accept a valid invite', function(){
+                beforeEach(function(done){
+                    db.getTestInvite(function(invite){
+                        invitations.getInvite(req, res, function(){
+                            invitations.acceptInvite(req, res, done);
+                        }, invite.inviteId);
+                    });
+                });
+                it('Should load the \'invitation accepted\' page with no error messages', function(){
+                    assert.equal(req.pageTitle, 'Invitation accepted!');
+                    assert.notProperty(req, 'flashMsg');
+                });
+            });
+
+            describe('Attempt to load an already accepted invite', function(){
+                beforeEach(function(done){
+                    db.getTestInvite(function(invite){
+                        invitations.getInvite(req, res, done, invite.inviteId);
+                    });
+                });
+                it('Should display an error flash message', function(){
+                    assert.equal(req.flashMsg.type, 'error');
+                });
+            });
+
+            // Clean up mock invites from the DB
+            after(function(done){
+                db.cleanupMockInvites(done);
+            });
+        });
+    }); // Invitations controller tests
 });

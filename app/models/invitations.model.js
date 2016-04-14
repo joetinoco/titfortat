@@ -46,7 +46,7 @@ exports.pendingById = function(inviteId, callback){
   var db = require('../models/db.model')();
 
   db.query({
-      sql: 'SELECT i.inviteId, i.groupId, i.inviteeEmail, g.groupName, u.userId '+
+      sql: 'SELECT i.inviteId, i.groupId, i.inviteeEmail, g.groupName, u.userId, i.status '+
       'FROM invites AS i '+
       'INNER JOIN groups AS g ON (i.groupId = g.groupId) ' +
       'LEFT JOIN users as u ON (i.inviteeEmail = u.userEmail) ' +
