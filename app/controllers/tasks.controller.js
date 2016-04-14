@@ -98,6 +98,13 @@ exports.allByUser = function(req, res, next, id) {
     var users = require('../models/users.model');
 
     users.getUserById(id, function(err, results) {
+        if (err){
+            return next(err);
+        }
+        if (!results){
+            req.flash('error', 'Cannot retrieve tasks: user not found.');
+            return next();
+        }
         var username = results.userName;
         var pageTitle = 'View ' + username + "'s Tasks";
         var assignerTasks;
@@ -190,10 +197,11 @@ exports.getNames = function(req, res, next) {
 
     tasks.getTasksByAssigner(req.user.userId, function(err, results) {
         if (err) {
-            console.log(err.toString());
-            // next(err);
-        } else if (results.length > 0) {
-            console.log("Tasks returned.");
+            req.flash('error', err.toString());
+            return next(err);
+        }
+        if (results.length === 0){
+            req.flash('error', 'No tasks to approve');
         }
 
         res.render('manageTask', {

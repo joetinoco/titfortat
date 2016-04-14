@@ -31,8 +31,6 @@ module.exports = function(){
     if (err) {
       console.error('DB: error connecting to server ' + err.stack);
       throw err;
-    } else {
-      console.log('> DB connection opened, thread ID: ' + connection.threadId);
     }
   });
 
