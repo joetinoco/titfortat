@@ -1,0 +1,69 @@
+joetinoco|Tue Apr 12 11:57:44 2016 -0400|Invitations are now accessed from inside group pages only
+joetinoco|Tue Apr 12 10:48:54 2016 -0400|Separated user tasks view in 'assigned by' and 'assigned to'; added buttons in home page
+joetinoco|Tue Apr 12 10:05:07 2016 -0400|User task counts added to home page
+joetinoco|Mon Apr 11 21:20:24 2016 -0400|Group name added to 'your tasks' view
+joetinoco|Mon Apr 11 21:01:18 2016 -0400|Proper group support for task viewing. Invites placed inside group view. Empty groups display properly.
+joetinoco|Fri Apr 8 10:53:42 2016 -0400|Task creation now happens inside a group
+joetinoco|Thu Apr 7 22:56:50 2016 -0400|Added list of groups to home page and adapted tasks.list to display tasks per group
+JihoYoo|Wed Mar 30 22:11:45 2016 -0400|added profile
+JihoYoo|Wed Mar 30 13:34:59 2016 -0400|Jiho-Merging test
+JihoYoo|Wed Mar 30 13:21:53 2016 -0400|Jiho-Try to merge file
+wchung555|Tue Mar 29 23:10:18 2016 -0400|fixed merge for taskExecutor
+wchung555|Tue Mar 29 22:56:38 2016 -0400|enabled downloading of helpFile refactored manageTasks
+wchung555|Tue Mar 29 22:47:09 2016 -0400|allowed downloading of helpFile refactored manageTasks (can only view tasks marked as completed; clicking the button will also mark the task as closed)
+joetinoco|Tue Mar 29 21:57:41 2016 -0400|Added links to proof of completion files in the 'update a task' view
+joetinoco|Tue Mar 29 20:56:09 2016 -0400|Fixed an 'oopsie' I didn with the DB model connection
+joetinoco|Tue Mar 29 19:33:01 2016 -0400|Added links to view completion proof in the 'Manage tasks' view
+joetinoco|Tue Mar 29 18:36:03 2016 -0400|Merge branch 'master' of https://github.com/joetinoco/titfortat
+joetinoco|Tue Mar 29 18:35:45 2016 -0400|Added file controller to serve uploaded files
+wchung555|Tue Mar 29 18:16:39 2016 -0400|tc3
+joetinoco|Tue Mar 29 14:21:55 2016 -0400|TE1 completed: added task proof file upload capabilities
+joetinoco|Sun Mar 27 23:07:46 2016 -0400|Invitations: user is added to the group upon invite acceptance
+joetinoco|Sun Mar 27 22:06:47 2016 -0400|Schema updated: added 'helpFile' and 'proofFile' fields to table 'tasks'
+joetinoco|Sun Mar 27 22:01:53 2016 -0400|Invites: user can accept invites, invites are updated accordingly
+joetinoco|Sun Mar 27 21:08:53 2016 -0400|Added email module; invitations are now emailed to users
+wchung555|Wed Mar 23 12:43:15 2016 -0400|te2
+wchung555|Tue Mar 22 21:02:06 2016 -0400|task creator: implemented credit removal; added credit display
+joetinoco|Sun Mar 20 18:08:59 2016 -0400|Prettified 'manage task' views
+joetinoco|Sun Mar 20 17:50:00 2016 -0400|Rewrote/fixed the last 'manage task' commit; user now receives the credits
+JihoYoo|Sun Mar 20 16:58:40 2016 -0400|added Manage Task
+JihoYoo|Sun Mar 20 16:44:29 2016 -0400|added Manage Task
+joetinoco|Sun Mar 20 16:11:43 2016 -0400|Rewrote the entire 'invitations' functionality from last commit
+KimSten876|Sun Mar 20 13:37:30 2016 -0400|Add invitations function
+KimSten876|Sun Mar 20 13:21:27 2016 -0400|Added invitations functionality
+joetinoco|Sun Mar 20 11:32:09 2016 -0400|Prettified group creation page
+joetinoco|Sun Mar 20 10:58:40 2016 -0400|Fixed bug where users without tasks crashed the /task/:user route
+wchung555|Sat Mar 19 23:34:14 2016 -0400|prettified create/view tasks pages
+Joseph Tinoco|Fri Mar 18 23:32:56 2016 -0400|Fix bug where task list does not show
+Sean Smith|Fri Mar 18 23:14:30 2016 -0400|Merge branch 'master' of https://github.com/joetinoco/titfortat
+Sean Smith|Fri Mar 18 23:14:12 2016 -0400|Fixed creatGroup problem where page would hang up and time out.
+Joseph Tinoco|Thu Mar 17 23:07:33 2016 -0400|Merge branch 'master' of https://github.com/joetinoco/titfortat
+Joseph Tinoco|Thu Mar 17 23:06:48 2016 -0400|DB schema updated (inviteID in invites table)
+Sean Smith|Thu Mar 17 20:08:14 2016 -0400|Fixed Error on createGroups page.
+Sean Smith|Wed Mar 16 23:32:51 2016 -0400|Renamed variables throughout the Groups MVC to make it more understandable to trace MVC protocols. Bug: group creator page found to be not working.
+Sean Smith|Wed Mar 16 22:11:03 2016 -0400|Merge branch 'master' of https://github.com/joetinoco/titfortat
+Sean Smith|Wed Mar 16 22:08:37 2016 -0400|Added skeletal files for invitation management.
+wchung555|Wed Mar 16 22:08:28 2016 -0400|added check to see if user has enough credits fo create task
+Sean Smith|Wed Mar 16 21:10:54 2016 -0400|Added group creator page and initial model; updated navbar to suit. Merged with master to fix conflicts
+Sean Smith|Wed Mar 16 20:44:38 2016 -0400|Added group creator page and initial model; updated navbar to suit.
+joetinoco|Mon Mar 14 23:07:35 2016 -0400|Better start page
+wchung555|Mon Mar 14 14:43:04 2016 -0400|refactored queries to retrive names of taskmaster and assignee
+wchung555|Wed Mar 9 22:33:40 2016 -0500|allowed viewing of tasks assigned by/to for users
+wchung555|Wed Mar 9 15:26:56 2016 -0500|refractored task creator
+wchung555|Wed Mar 9 15:04:16 2016 -0500|Merge branch 'master' of https://github.com/joetinoco/titfortat
+joetinoco|Wed Mar 9 15:02:52 2016 -0500|Switched bcrypt package
+wchung555|Wed Mar 9 15:00:08 2016 -0500|Merge branch 'master' of https://github.com/joetinoco/titfortat
+wchung555|Wed Mar 9 14:58:44 2016 -0500|added task creator
+joetinoco|Wed Mar 9 14:47:27 2016 -0500|Flash messages used for errors; index updated to reflect logged in user
+joetinoco|Wed Mar 9 14:00:32 2016 -0500|SUP1 (profile creation) and SUP2 (sign in) completed
+joetinoco|Wed Mar 9 13:40:35 2016 -0500|Authentication: user sign-in form, passport configs (except password checking)
+joetinoco|Wed Mar 9 11:26:12 2016 -0500|Sign in form completed, plus model and controller for DB insertion
+joetinoco|Wed Mar 9 10:50:14 2016 -0500|Starting user model/controller and signup form. Added Bootstrap and EJS templating.
+joetinoco|Tue Mar 8 20:53:16 2016 -0500|Merge branch 'master' of https://github.com/joetinoco/titfortat
+joetinoco|Tue Mar 8 20:51:29 2016 -0500|Started configuring passport, refactored DB connection code to allow easier reuse
+joetinoco|Tue Mar 8 20:51:29 2016 -0500|Refactored DB connection code to allow easier reuse in each controller
+José Carlos Tinoco|Tue Mar 8 18:24:44 2016 -0500|Schema update: 'taskDescription' field added to 'tasks' table
+joetinoco|Mon Mar 7 17:17:42 2016 -0500|DB schema PNG included
+joetinoco|Mon Mar 7 16:59:17 2016 -0500|Merge branch 'master' of https://github.com/joetinoco/titfortat
+joetinoco|Mon Mar 7 16:58:15 2016 -0500|Initial commit (boilerplate node app, MySQL credentials, etc)
+Joseph Tinoco|Mon Mar 7 16:53:56 2016 -0500|Create README.md

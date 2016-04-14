@@ -1,0 +1,35 @@
+<h1>Tasks Assigned to <%= username %></h1>
+<% if (assigneeTasks == '') { %>
+    <p id="errorMsg" class="text-danger"><i>Nothing here yet</i></p>
+<% } else { %>
+    <table class="table table-striped">
+        <thead>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Group</th>
+            <th>Assigned By</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            <% assigneeTasks.forEach(function(task) { %>
+                <tr>
+                    <td>
+                        <%= task[0] %>
+                    </td>
+                    <td>
+                        <%= task[1] %>
+                    </td>
+                    <td>
+                        <a href="/group/<%= task[2] %>"><%= task[3] %></a>
+                    </td>
+                    <td>
+                        <%= task[4] %>
+                    </td>
+                    <td>
+                        <%= task[5] %>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
