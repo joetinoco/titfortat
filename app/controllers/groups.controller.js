@@ -14,11 +14,9 @@ exports.create = function(req, res, next) {
 
         groupModel.createGroup(req.body, req.user, function(err,data) {
             if(err) {
-                console.log(err.toString());
-                req.flash('Feedback', 'Group creation failed. Error Code: ' + err.code);
+                req.flash('error', 'Group creation failed. Error Code: ' + err.code);
+                res.redirect('/createGroup');
             } else{
-                console.log('Group created');
-
                 req.flash('success', 'Success. Group Created.');
                 res.redirect('/createGroup');
             }//else
@@ -31,8 +29,8 @@ exports.create = function(req, res, next) {
 exports.renderGroupCreator = function(req, res, next){
     res.render('groupCreator', {
         pageTitle: 'Create a Group',
-        errorMsg: req.flash('Feedback', ''),
-        successMsg: req.flash('success', ''),
+        errorMsg: req.flash('error'),
+        successMsg: req.flash('success'),
         user: req.user
     });
 }//render
@@ -70,27 +68,39 @@ exports.loadUserGroups = function(req, res, next){
 }
 
 exports.selectGroup = function(req, res, next, groupId){
-    req.currentGroup = groupId;
-    // Check if the current user owns the group
     var ownsGroup = false;
-    if(!req.user){
-        req.ownsCurrentGroup = ownsGroup;
-        next();
-    } else {
-        var groups = require('../models/groups.model');
-        groups.groupsOwnedById(req.user.userId, function(err, results){
-            if (err){
-                console.log(err);
-            } else {
-                results.forEach(function(g){
-                    if (g.groupId == groupId){
-                        ownsGroup = true;
-                        req.currentGroupName = g.groupName;
-                    }
-                })
+    var groups = require('../models/groups.model');
+    // Retrieve the group name
+    groups.groupName(groupId, function(err, results){
+        if (err){
+            req.flash('error', 'Error retrieving group: ' + err.toString());
+            res.redirect('/');
+        } else if (!results){
+            req.flash('error', 'Group not found.');
+            res.redirect('/');
+        } else {
+            req.currentGroup = groupId;
+            req.currentGroupName = results.groupName;
+            // Check if the current user owns the group
+            if(!req.user){
                 req.ownsCurrentGroup = ownsGroup;
                 next();
+            } else {
+                groups.groupsOwnedById(req.user.userId, function(err, results){
+                    if (err){
+                        req.flash('error', 'Error retrieving groups: ' + err.toString());
+                        res.redirect('/');
+                    } else {
+                        results.forEach(function(g){
+                            if (g.groupId == groupId){
+                                ownsGroup = true;
+                            }
+                        });
+                        req.ownsCurrentGroup = ownsGroup;
+                        next();
+                    }
+                });
             }
-        });
-    }
+        }
+    });
 }

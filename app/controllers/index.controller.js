@@ -18,6 +18,8 @@ exports.render = function(req, res){
         tasksClosed: req.tasksClosed,
         tasksAssignedPending: req.tasksAssignedPending,
         tasksAssignedWaitingApproval: req.tasksAssignedWaitingApproval,
-        tasksAssignedClosed: req.tasksAssignedClosed
+        tasksAssignedClosed: req.tasksAssignedClosed,
+        errorMsg: req.flash('error'),
+        successMsg: req.flash('success')
     });
 };

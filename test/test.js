@@ -6,6 +6,15 @@ var expect = require('chai').expect;
 var req, res, next;
 
 
+// Controllers
+var index = require('../app/controllers/index.controller'),
+users = require('../app/controllers/users.controller'),
+tasks = require('../app/controllers/tasks.controller.js'),
+files = require('../app/controllers/files.controller.js'),
+invitations = require('../app/controllers/invitations.controller.js'),
+groups = require('../app/controllers/groups.controller.js');
+
+
 // Mock users
 var mockUser = {
     userId: 477,
@@ -26,6 +35,9 @@ var mockGrouplessUser = {
 // Mock groups
 var mockCurrentGroup = 16;
 var mockInvalidGroup = -999;
+var mockGroup = {
+    groupName: 'Mock Group (test)'
+}
 
 // Mock invites
 var mockInvitationEmail = 'mochatest@josetinoco.com';
@@ -69,15 +81,16 @@ var db = {
             callback();
         });
     },
+    cleanupMockGroups: function(callback){
+        var conn = require('../app/models/db.model')();
+        conn.query({
+            sql: "DELETE FROM groups WHERE groupName = ?",
+            values: [mockGroup.groupName]
+        }, function(err, result){
+            callback();
+        });
+    },
 };
-
-// Controllers
-var index = require('../app/controllers/index.controller'),
-users = require('../app/controllers/users.controller'),
-tasks = require('../app/controllers/tasks.controller.js'),
-files = require('../app/controllers/files.controller.js'),
-invitations = require('../app/controllers/invitations.controller.js'),
-groups = require('../app/controllers/groups.controller.js');
 
 // Mock request/response objects with stub functions
 var beforeAllTests = function(){
@@ -118,7 +131,7 @@ describe('Controllers', function(){
 
     /*
     *
-    * Tests for the USER controller
+    * Tests for the USERS controller
     *
     */
 
@@ -198,6 +211,122 @@ describe('Controllers', function(){
             db.cleanupMockUsers(done);
         });
     }); // Users controller
+
+    /*
+    *
+    * Tests for the GROUPS controller
+    *
+    */
+
+    describe('Users controller', function(){
+
+        // groups.create
+        // =============
+
+        describe('Create a new group', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                req.body = {};
+                req.body.name = mockGroup.groupName;
+                res.asyncReturn = done;
+                groups.create(req, res, done);
+            });
+            it('Should redirect the user to the create group page with a success message', function(){
+                assert.equal(res.redirected, '/createGroup');
+                assert.equal(req.flashMsg.type, 'success');
+            });
+        });
+
+        describe('Create a group with the same name of an existing group', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                req.body = {};
+                req.body.name = mockGroup.groupName;
+                res.asyncReturn = done;
+                groups.create(req, res, done);
+            });
+            it('Should redirect the user to the create group page with an error message', function(){
+                assert.equal(res.redirected, '/createGroup');
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+
+        // groups.loadUserOwnedGroups
+        // ==========================
+
+        describe('Load user owned groups', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                res.asyncReturn = done;
+                groups.loadUserOwnedGroups(req, res, done);
+            });
+            it('Should load the user\'s groups into the request', function(){
+                assert.isOk(req.groups.owned);
+                assert.isAtLeast(req.groups.owned.length, 1);
+            });
+        });
+
+        // groups.loadUserGroups
+        // =====================
+
+        describe('Load groups of which the user is a member', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                res.asyncReturn = done;
+                groups.loadUserGroups(req, res, done);
+            });
+            it('Should load the user\'s groups into the request', function(){
+                assert.isOk(req.groups.member);
+                assert.isAtLeast(req.groups.member.length, 1);
+            });
+        });
+
+        // groups.selectGroup
+        // ==================
+
+        describe('Select a group owned by the user', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                res.asyncReturn = done;
+                groups.selectGroup(req, res, done, mockCurrentGroup);
+            });
+            it('Should load the group name and the \'user owns the group\' flag', function(){
+                assert.isDefined(req.currentGroupName);
+                assert.isDefined(req.ownsCurrentGroup);
+                assert.isTrue(req.ownsCurrentGroup);
+            });
+        });
+
+        describe('Select a group where the user is a participant', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                res.asyncReturn = done;
+                groups.selectGroup(req, res, done, 22);
+            });
+            it('Should load the group name and the \'user owns the group\' flag', function(){
+                assert.isDefined(req.currentGroupName);
+                assert.isDefined(req.ownsCurrentGroup);
+                assert.isFalse(req.ownsCurrentGroup);
+            });
+        });
+
+        describe('Attempt to select an invalid group', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                res.asyncReturn = done;
+                groups.selectGroup(req, res, done, mockInvalidGroup);
+            });
+            it('Should redirect the user to the home with an error message', function(){
+                assert.equal(res.redirected, '/');
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+
+        // Cleanup after group tests
+        after(function(done){
+            db.cleanupMockGroups(done);
+        });
+    }); // Groups controller
 
     /*
     *

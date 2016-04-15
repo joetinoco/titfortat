@@ -26,18 +26,15 @@ exports.listAll = function(callback) {
 exports.createGroup = function(group, user, callback){
     var db = require('../models/db.model')(); //db connection
 
-    console.log("sending query...");
     db.query({
         sql: 'INSERT INTO groups ' + ' (groupName, groupAdminId) ' + 'VALUES (?,?)',
         values:[group.name, user.userId]
     }, function (err, results, fields) {
         db.end(); //close db connection
         if (err){
-            console.log('Error returned');
             callback(err);
             return;
         }//if error
-        console.log('db returned something');
         callback(false, results); //callback that send data to controller
     });//end query
 }
