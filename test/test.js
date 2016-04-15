@@ -9,7 +9,8 @@ var req, res, next;
 // Mock users
 var mockUser = {
     userId: 477,
-    username: 'joseph'
+    username: 'joseph',
+    userEmail: 'joseph@joseph.com'
 }
 
 var mockInvalidUser = {
@@ -59,6 +60,15 @@ var db = {
             });
         });
     },
+    cleanupMockUsers: function(callback){
+        var conn = require('../app/models/db.model')();
+        conn.query({
+            sql: "DELETE FROM users WHERE userEmail = ?",
+            values: ['mockuser@mockuserland.com']
+        }, function(err, result){
+            callback();
+        });
+    },
 };
 
 // Controllers
@@ -105,6 +115,89 @@ var beforeAllTests = function(){
 
 describe('Controllers', function(){
     beforeEach(beforeAllTests);
+
+    /*
+    *
+    * Tests for the USER controller
+    *
+    */
+
+    describe('Users controller', function(){
+
+        // users.createUser
+        // ================
+
+        describe('Create a new, non-existing user', function(){
+            beforeEach(function(done){
+                req.body = {}
+                req.body.name = 'tester00'
+                req.body.password = 'passpasspasspasspasspass';
+                req.body.email = 'mockuser@mockuserland.com';
+                req.body.phone = '555-647-7777';
+                req.body.country = 'Testland';
+                res.asyncReturn = done;
+                users.createUser(req, res, done);
+            });
+            it('Should redirect the user to the signin page with a success message', function(){
+                assert.equal(res.redirected, '/signin');
+                assert.equal(req.flashMsg.type, 'success');
+            });
+        });
+
+        describe('Attempt to create a user with an existing username', function(){
+            beforeEach(function(done){
+                req.body = {}
+                req.body.name = 'joseph'
+                req.body.password = 'passpasspasspasspasspass';
+                req.body.email = 'mockuser@mockuserland.com';
+                req.body.phone = '555-647-7777';
+                req.body.country = 'Testland';
+                res.asyncReturn = done;
+                users.createUser(req, res, done);
+            });
+            it('Should redirect the user to the signup page with an error message', function(){
+                assert.equal(res.redirected, '/signup');
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+
+        describe('Attempt to create a user with an existing email', function(){
+            beforeEach(function(done){
+                req.body = {}
+                req.body.name = 'tester01'
+                req.body.password = 'passpasspasspasspasspass';
+                req.body.email = mockUser.email;
+                req.body.phone = '555-647-7777';
+                req.body.country = 'Testland';
+                res.asyncReturn = done;
+                users.createUser(req, res, done);
+            });
+            it('Should redirect the user to the signup page with an error message', function(){
+                assert.equal(res.redirected, '/signup');
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+
+        describe('Load user counts for a user', function(){
+            beforeEach(function(done){
+                req.user = mockUser;
+                users.loadUserCounts(req, res, done);
+            });
+            it('Should load the request with all user counts, even if they\'re zero', function(){
+                assert.isAtLeast(req.tasksAssignedPending, 0);
+                assert.isAtLeast(req.tasksAssignedWaitingApproval, 0);
+                assert.isAtLeast(req.tasksAssignedClosed, 0);
+                assert.isAtLeast(req.tasksPending, 0);
+                assert.isAtLeast(req.tasksWaitingApproval, 0);
+                assert.isAtLeast(req.tasksClosed, 0);
+            });
+        });
+
+        // Clean up after user tests
+        after(function(done){
+            db.cleanupMockUsers(done);
+        });
+    }); // Users controller
 
     /*
     *

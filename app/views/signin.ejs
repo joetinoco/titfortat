@@ -24,6 +24,9 @@ User sign in form
             <% if (typeof errorMsg !== 'undefined') { %>
               <p id="errorMsg" class="text-danger"><%= errorMsg %></p>
             <% } %>
+            <% if (typeof successMsg !== 'undefined') { %>
+              <p id="successMsg" class="text-info"><%= successMsg %></p>
+            <% } %>
           </form>
 
         </div>

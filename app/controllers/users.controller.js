@@ -13,7 +13,11 @@ exports.renderSignup = function(req, res, next){
 
 // Render sign in form
 exports.renderSignin = function(req, res, next){
-    res.render('signin', { pageTitle: 'Sign in', errorMsg: req.flash('error') } );
+    res.render('signin', {
+        pageTitle: 'Sign in',
+        errorMsg: req.flash('error'),
+        successMsg: req.flash('success')
+    });
 }
 
 // Handler for the sign up form POST requests
@@ -28,6 +32,7 @@ exports.createUser = function(req, res, next){
             // Insertion worked.
             // data.affectedRows should be 1,
             // and data.insertId contains the newly-created user ID.
+            req.flash('success', 'Success! Now log in to use the app.');
             res.redirect('/signin');
         }
     });
