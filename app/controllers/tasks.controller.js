@@ -237,7 +237,7 @@ exports.updateAssigneeTasks = function(req, res, next) {
     var tasks = require('../models/tasks.model');
     tasks.updateAssigneeTask(req.body, req.file, function(err, results) {
         if (err) {
-            req.flash('error', err.toString());
+            req.flash('error', err.code);
         } else {
             req.flash('error', 'Task updated');
         }

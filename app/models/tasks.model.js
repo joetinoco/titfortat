@@ -168,8 +168,6 @@ exports.getTaskCountsByAssignee = function(assigneeId, callback) {
 
 exports.updateAssigneeTask = function(task, file, callback) {
     serializedFile = file ? JSON.stringify(file) : null;
-    console.log('Serialized file:');
-    console.log(serializedFile);
     var db = require('../models/db.model')();
     db.query({
         sql: 'update tasks set taskStatus = ?, proofFile = ? where taskId = ?',
@@ -179,7 +177,7 @@ exports.updateAssigneeTask = function(task, file, callback) {
             callback(err);
             return;
         }
-        if (results.length == 0) {
+        if (results.affectedRows === 0) {
             callback({ code: 'Tasks not found' });
             return;
         }
@@ -226,9 +224,14 @@ exports.awardCredits = function(task, callback) {
         }
         // Mark task as closed
         if (completedTask.length <= 0) {
-            console.log('Invalid taskId');
+            // Invalid task ID
+            callback({
+                toString: function(){
+                    return 'Invalid task ID'
+                }
+            });
         } else {
-            console.log('Changing task status to "Closed"');
+            // Changing task status to "Closed"
             db.query({
                 sql: 'update tasks set taskStatus = "Closed" where taskId = ?;',
                 values: [completedTask[0].taskId]
@@ -241,7 +244,7 @@ exports.awardCredits = function(task, callback) {
             });
 
             // Give those task's credits to the user
-            console.log('Giving ' + completedTask[0].taskCredits + ' credit(s) to ' + completedTask[0].assigneeId);
+            //console.log('Giving ' + completedTask[0].taskCredits + ' credit(s) to ' + completedTask[0].assigneeId);
             db.query({
                 sql: 'update users set userCredits = userCredits + ? where userId = ?',
                 values: [completedTask[0].taskCredits, completedTask[0].assigneeId]

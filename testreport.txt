@@ -1,0 +1,73 @@
+
+
+  Controllers
+    Users controller
+      Create a new, non-existing user
+        √ Should redirect the user to the signin page with a success message
+      Attempt to create a user with an existing username
+        √ Should redirect the user to the signup page with an error message
+      Attempt to create a user with an existing email
+        √ Should redirect the user to the signup page with an error message
+      Load user counts for a user
+        √ Should load the request with all user counts, even if they're zero
+    Groups controller
+      Create a new group
+        √ Should redirect the user to the create group page with a success message
+      Create a group with the same name of an existing group
+        √ Should redirect the user to the create group page with an error message
+      Load user owned groups
+        √ Should load the user's groups into the request
+      Load groups of which the user is a member
+        √ Should load the user's groups into the request
+      Select a group owned by the user
+        √ Should load the group name and the 'user owns the group' flag
+      Select a group where the user is a participant
+        √ Should load the group name and the 'user owns the group' flag
+      Attempt to select an invalid group
+        √ Should redirect the user to the home with an error message
+    Tasks controller
+      read tasks from a group
+        √ Should render the groups' task list
+      read all tasks
+        √ Should render all tasks from all groups
+      Load a single task by ID
+        √ Should retrieve the task
+      Attempt to load a task that does not exist
+        √ Should not load the task
+        √ Should show a flash message
+      Load all tasks for a given user
+        √ Should retrieve the list of tasks
+        √ Tasks must belong to given user
+      Attempt to load tasks for an invalid user
+        √ Should not load any tasks
+        √ Should show a flash message
+      Manage (approve) tasks of a given user
+        √ Should retrieve the list of tasks
+        √ Tasks must belong to given user
+      Attempt to approve tasks of an invalid user
+        √ Should not load any tasks
+        √ Should show a flash message
+    Invitations controller
+      Render the 'new invite' page
+        √ Should render the new invite page
+        √ Should have the form linked to the selected group
+      Attempt an invitation without owning any groups
+        √ Should render the new invite page anyway
+        √ Should show a flash error message
+      Create a new invite
+        √ Should redirect the user back and show a success flash message
+      Accept invites
+        Attempt to load an invalid invite
+          √ Should not load any invites
+          √ Should display an error flash message
+        Retrieve a valid invite
+          √ Should load the invite in the request
+          √ Should not have an error flash message
+        Accept a valid invite
+          √ Should load the 'invitation accepted' page with no error messages
+        Attempt to load an already accepted invite
+          √ Should display an error flash message
+
+
+  35 passing (21s)
+
