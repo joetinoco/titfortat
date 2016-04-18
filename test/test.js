@@ -453,7 +453,65 @@ describe('Controllers', function(){
                 assert.equal(req.flashMsg.type, 'error');
             });
         });
-
+        
+        
+        // tasks.completeTask
+        // ===============
+        describe('Mark valid task as completed', function() {
+            beforeEach(function(done) {
+                req.body = {};
+                req.body.taskId = 11;
+                res.asyncReturn = done;
+                tasks.completeTask(req, res, done);
+            });
+            it('Should redirect to Manage Task page with a success flash message', function() {
+                assert.equal(res.redirected, '/manageTask');
+                assert.equal(req.flashMsg.type, 'success');
+            });
+        });
+        
+        describe('Attempt to mark invalid task as completed', function() {
+            beforeEach(function(done) {
+                req.body = {};
+                req.body.taskId = -9999;
+                res.asyncReturn = done;
+                tasks.completeTask(req, res, done);
+            });
+            it('Should redirect to Manage Task page with an error flash message', function() {
+                assert.equal(res.redirected, '/manageTask');
+                assert.equal(req.flashMsg.type, 'error');
+            });
+        });
+        
+        
+        // tasks.updateAssigneeTasks
+        // ===============
+        describe('Update task status for a valid task', function(){
+            beforeEach(function(done) {
+                req.body = {};
+                req.body.id = 15;
+                req.body.status = 'Accepted';   
+                tasks.updateAssigneeTasks(req, res, done);             
+            });
+            it('Should show a flash message', function(){
+                assert.equal(req.flash.msg, 'Task updated');
+            });
+        });
+        
+        //TODO: this doesn't work:
+        // describe('Update task status for an invalid task', function(){
+        //     beforeEach(function(done) {
+        //         req.body = {};
+        //         req.body.id = -9999;
+        //         req.body.status = 'Accepted';   
+        //         tasks.updateAssigneeTasks(req, res, done);             
+        //     });
+        //     it('Should show a flash message', function(){
+        //         assert.notEqual(req.flash.msg, 'Task updated');
+        //     });
+        // });
+        
+        
     }); // Tasks controller tests
 
     /*

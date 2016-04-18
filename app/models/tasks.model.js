@@ -6,14 +6,14 @@
 exports.list = function(groupId, callback) {
     var db = require('../models/db.model')();
     var query = 'select tasks.taskName, tasks.taskDescription, tasks.taskmasterId, ' +
-      'u1.userName as assigner, tasks.assigneeId, u2.userName as assignee, tasks.taskStatus ' +
-      'from tasks ' +
-      'join users u1 on u1.userId = tasks.taskmasterId ' +
-      'join users u2 on u2.userId = tasks.assigneeId ';
+        'u1.userName as assigner, tasks.assigneeId, u2.userName as assignee, tasks.taskStatus ' +
+        'from tasks ' +
+        'join users u1 on u1.userId = tasks.taskmasterId ' +
+        'join users u2 on u2.userId = tasks.assigneeId ';
 
-      if (groupId){
+    if (groupId) {
         query += 'join tasksGroups tg on tasks.taskId = tg.taskId where tg.groupId = ' + groupId;
-      }
+    }
     db.query({
         sql: query
     }, function(err, results, fields) {
@@ -64,19 +64,19 @@ exports.createTask = function(task, file, callback) {
             callback(err);
             return;
         } else {
-          // Add task to the group
-          db.query({
-              sql: 'INSERT INTO tasksGroups (taskId, groupId) ' +
-              'VALUES (?,?);',
-              values: [result.insertId, task.groupId]
-          }, function(err, results, fields) {
-              db.end();
-              if (err) {
-                  callback(err);
-                  return;
-              }
-              callback(false, results);
-          });
+            // Add task to the group
+            db.query({
+                sql: 'INSERT INTO tasksGroups (taskId, groupId) ' +
+                'VALUES (?,?);',
+                values: [result.insertId, task.groupId]
+            }, function(err, results, fields) {
+                db.end();
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                callback(false, results);
+            });
         }
     });
 }
@@ -101,10 +101,10 @@ exports.getTasksByAssigner = function(assignerId, callback) {
     var db = require('../models/db.model')();
     db.query({
         sql: 'SELECT t.*, g.*, u.userName FROM tasks AS t ' +
-            'JOIN users AS u ON u.userId = t.assigneeId ' +
-            'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
-            'JOIN groups AS g ON tg.groupId = g.groupId ' +
-            'WHERE t.taskmasterId = ?',
+        'JOIN users AS u ON u.userId = t.assigneeId ' +
+        'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
+        'JOIN groups AS g ON tg.groupId = g.groupId ' +
+        'WHERE t.taskmasterId = ?',
         values: [assignerId]
     }, function(err, results, fields) {
         if (err) {
@@ -119,8 +119,8 @@ exports.getTaskCountsByAssigner = function(assignerId, callback) {
     var db = require('../models/db.model')();
     db.query({
         sql: 'SELECT taskStatus, count(*) AS numTasks FROM tasks ' +
-            'WHERE taskmasterId = ? ' +
-            'GROUP BY taskStatus ',
+        'WHERE taskmasterId = ? ' +
+        'GROUP BY taskStatus ',
         values: [assignerId]
     }, function(err, results, fields) {
         if (err) {
@@ -136,10 +136,10 @@ exports.getTasksByAssignee = function(assigneeId, callback) {
     var db = require('../models/db.model')();
     db.query({
         sql: 'SELECT t.*, g.*, u.userName FROM tasks AS t ' +
-            'JOIN users AS u ON u.userId = t.taskmasterId ' +
-            'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
-            'JOIN groups AS g ON tg.groupId = g.groupId ' +
-            'WHERE t.assigneeId = ?',
+        'JOIN users AS u ON u.userId = t.taskmasterId ' +
+        'JOIN tasksGroups AS tg ON t.taskId = tg.taskId ' +
+        'JOIN groups AS g ON tg.groupId = g.groupId ' +
+        'WHERE t.assigneeId = ?',
         values: [assigneeId]
     }, function(err, results, fields) {
         if (err) {
@@ -154,8 +154,8 @@ exports.getTaskCountsByAssignee = function(assigneeId, callback) {
     var db = require('../models/db.model')();
     db.query({
         sql: 'SELECT taskStatus, count(*) AS numTasks FROM tasks ' +
-            'WHERE assigneeId = ? ' +
-            'GROUP BY taskStatus ',
+        'WHERE assigneeId = ? ' +
+        'GROUP BY taskStatus ',
         values: [assigneeId]
     }, function(err, results, fields) {
         if (err) {
@@ -225,30 +225,34 @@ exports.awardCredits = function(task, callback) {
             return;
         }
         // Mark task as closed
-        console.log('Changing task status to "Closed"');
-        db.query({
-            sql: 'update tasks set taskStatus = "Closed" where taskId = ?;',
-            values: [completedTask[0].taskId]
-        }, function(err, results, fields) {
-            if (err) {
-                db.end();
-                callback(err);
-                return;
-            }
-        });
+        if (completedTask.length <= 0) {
+            console.log('Invalid taskId');
+        } else {
+            console.log('Changing task status to "Closed"');
+            db.query({
+                sql: 'update tasks set taskStatus = "Closed" where taskId = ?;',
+                values: [completedTask[0].taskId]
+            }, function(err, results, fields) {
+                if (err) {
+                    db.end();
+                    callback(err);
+                    return;
+                }
+            });
 
-        // Give those task's credits to the user
-        console.log('Giving ' + completedTask[0].taskCredits + ' credits to ' + completedTask[0].assigneeId);
-        db.query({
-            sql: 'update users set userCredits = userCredits + ? where userId = ?',
-            values: [completedTask[0].taskCredits, completedTask[0].assigneeId]
-        }, function(err, results, fields) {
-            db.end();
-            if (err) {
-                callback(err);
-                return;
-            }
-            callback(false, results);
-        });
+            // Give those task's credits to the user
+            console.log('Giving ' + completedTask[0].taskCredits + ' credit(s) to ' + completedTask[0].assigneeId);
+            db.query({
+                sql: 'update users set userCredits = userCredits + ? where userId = ?',
+                values: [completedTask[0].taskCredits, completedTask[0].assigneeId]
+            }, function(err, results, fields) {
+                db.end();
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                callback(false, results);
+            });
+        }
     });
 }
